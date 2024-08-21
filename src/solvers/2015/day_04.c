@@ -21,7 +21,7 @@ static int first_hash_with_zeros(const char* input, size_t zeros)
     int suffix = 0;
 
     size_t key_length = strlen(input);
-    char key[key_length + 10];
+    char* key = malloc(key_length + 10);
     memcpy(&key[0], input, key_length);
 
     do
@@ -29,6 +29,8 @@ static int first_hash_with_zeros(const char* input, size_t zeros)
         itoa(++suffix, key + key_length, 10);
         hash_md5(&key[0], strlen(key), &digest[0]);
     } while (!has_leading_zeros(&digest[0], zeros));
+
+    free(key);
 
     return suffix;
 }
@@ -44,7 +46,7 @@ SolverResult solve_2015_day_04_part_1(const char* input)
 SolverResult solve_2015_day_04_part_2(const char* input)
 {
     return (SolverResult) {
-            .type = RESULT_INT,
-            .integer_result = first_hash_with_zeros(input, 6)
+        .type = RESULT_INT,
+        .integer_result = first_hash_with_zeros(input, 6)
     };
 }
