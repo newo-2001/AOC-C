@@ -27,5 +27,7 @@ SolverResult solve_2015_day_02_part_1(const char* input);
 SolverResult solve_2015_day_02_part_2(const char* input);
 SolverResult solve_2015_day_03_part_1(const char* input);
 SolverResult solve_2015_day_03_part_2(const char* input);
+SolverResult solve_2015_day_04_part_1(const char* input);
+SolverResult solve_2015_day_04_part_2(const char* input);
 
 #endif

@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lib/strutils.h"
-#include "constants.h"
 #include "solvers/solvers.h"
 
 char* read_file(const char* path);
@@ -17,17 +16,19 @@ int main()
         solve_2015_day_02_part_1,
         solve_2015_day_02_part_2,
         solve_2015_day_03_part_1,
-        solve_2015_day_03_part_2
+        solve_2015_day_03_part_2,
+        solve_2015_day_04_part_1,
+        solve_2015_day_04_part_2
     };
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);
 
-    for (size_t i = 0; i < NUM_SOLVERS; i++)
+    for (unsigned int i = 0; i < NUM_SOLVERS; i++)
     {
         Solver solver = solvers[i];
-        int year = 2015 + i / 49;
-        int day = 1 + (i % 49) / 2;
-        int part = 1 + (i % 49 % 2);
+        unsigned int year = 2015 + i / 49;
+        unsigned int day = 1 + (i % 49) / 2;
+        unsigned int part = 1 + (i % 49 % 2);
 
         char input_path[sizeof("inputs/2015/day_01.txt")];
         sprintf_s(&input_path[0], sizeof(input_path), "inputs/%i/day_%02i.txt", year, day);
@@ -81,7 +82,7 @@ int main()
 
                 break;
             }
-        };
+        }
 
         if (!strcmp(result_str, solution))
         {
@@ -109,8 +110,8 @@ char* read_file(const char* path)
     size_t length = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char* buffer = (char*) malloc(sizeof(char) * length);
-    size_t read = fread_s(buffer, length, sizeof(char), length - 1, file);
+    char* buffer = (char*) malloc(sizeof(char) * (length + 1));
+    size_t read = fread(buffer, sizeof(char), length, file);
     buffer[read] = '\0';
 
     fclose(file);

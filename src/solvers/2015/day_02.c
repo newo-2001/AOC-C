@@ -1,8 +1,8 @@
 #include "../solvers.h"
 #include "../../lib/strutils.h"
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <minmax.h>
 
 typedef struct Present
 {
@@ -14,7 +14,7 @@ typedef struct Present
 static Present parse_present(const char* str)
 {
     Present present;
-    sscanf(str, "%ux%ux%u", &present.length, &present.width, &present.height);
+    sscanf(str, "%ix%ix%i", &present.length, &present.width, &present.height);
     return present;
 }
 

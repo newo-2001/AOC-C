@@ -4,7 +4,7 @@
 
 SolverResult solve_2015_day_01_part_1(const char* input) {
     SolverResult result;
-    int floor = 1;
+    int floor = 0;
 
     char c;
     while ((c = *(input++)))

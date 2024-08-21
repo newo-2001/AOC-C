@@ -6,7 +6,7 @@ typedef struct Vec2 {
     int y;
 } Vec2;
 
-inline Vec2 vec2_addv(Vec2 left, Vec2 right)
+static inline Vec2 vec2_addv(Vec2 left, Vec2 right)
 {
     return (Vec2) { .x = left.x + right.x, .y = left.y + right.y };
 }

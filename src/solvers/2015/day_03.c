@@ -2,7 +2,7 @@
 #include "../../lib/geometry.h"
 #include "../../lib/collections/hashmap.h"
 
-static inline Direction parse_direction(Direction direction)
+static inline Direction parse_direction(char direction)
 {
     switch (direction)
     {
@@ -30,7 +30,7 @@ SolverResult solve_2015_day_03_part_1(const char* input)
 
     SolverResult result;
     result.type = RESULT_INT;
-    result.integer_result = hashmap_size(visited);
+    result.integer_result = (int) hashmap_size(visited);
     hashmap_destroy(visited);
 
     return result;
@@ -56,7 +56,7 @@ SolverResult solve_2015_day_03_part_2(const char* input)
 
     SolverResult result;
     result.type = RESULT_INT;
-    result.integer_result = hashmap_size(visited);
+    result.integer_result = (int) hashmap_size(visited);
     hashmap_destroy(visited);
 
     return result;

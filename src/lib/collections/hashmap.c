@@ -1,20 +1,9 @@
 #include "hashmap.h"
 #include "../../constants.h"
+#include "../hash.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-static int hash(void* data, size_t size)
-{
-    int hash = 5381;
-    for (size_t i = 0; i < size; i++)
-    {
-        unsigned char byte = ((unsigned char*) data)[i];
-        hash = (hash << 5) + hash + byte;
-    }
-
-    return hash;
-}
 
 static bool keys_eq(HashMap map, void* left, void* right)
 {
@@ -60,7 +49,7 @@ void hashmap_destroy(HashMap map)
 
 void hashmap_insert(HashMap map, void* key, void* value)
 {
-    size_t index = hash(key, map.key_size) % map.bucket_count;
+    size_t index = hash_djb2(key, map.key_size) % map.bucket_count;
     HashMapNode** prev = &map.buckets[index];
     HashMapNode* node = *prev;
 
