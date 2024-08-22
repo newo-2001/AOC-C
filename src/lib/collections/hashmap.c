@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static bool keys_eq(HashMap map, void* left, void* right)
+static bool keys_eq(HashMap map, const void* left, const void* right)
 {
     if (left && right)
     {
@@ -16,15 +16,13 @@ static bool keys_eq(HashMap map, void* left, void* right)
 
 HashMap hashmap_new(size_t key_size, size_t value_size, size_t buckets)
 {
-    HashMap map;
-    map.bucket_count = buckets;
-    map.key_size = key_size;
-    map.value_size = value_size;
-
-    map.buckets = malloc(sizeof(HashMapNode*) * buckets);
-    memset(map.buckets, 0, sizeof(HashMapNode*) * buckets);
-
-    return map;
+    return (HashMap) {
+        .size = 0,
+        .bucket_count = buckets,
+        .key_size = key_size,
+        .value_size = value_size,
+        .buckets = calloc(buckets, sizeof(HashMapNode*))
+    };
 }
 
 void hashmap_destroy(HashMap map)
@@ -47,25 +45,17 @@ void hashmap_destroy(HashMap map)
     free(map.buckets);
 }
 
-void hashmap_insert(HashMap map, void* key, void* value)
+void hashmap_insert(HashMap* map, const void* key, const void* value)
 {
-    size_t index = hash_djb2(key, map.key_size) % map.bucket_count;
-    HashMapNode** prev = &map.buckets[index];
+    size_t index = hash_djb2(key, map->key_size) % map->bucket_count;
+    HashMapNode** prev = &map->buckets[index];
     HashMapNode* node = *prev;
 
     while (node)
     {
-        if (keys_eq(map, node->key, key))
+        if (keys_eq(*map, node->key, key))
         {
-            if (node->value)
-            {
-                node->value = value;
-            }
-            else
-            {
-                memcpy(node->value, value, map.value_size);
-            }
-
+            memcpy(node->value, value, map->value_size);
             return;
         }
 
@@ -77,36 +67,33 @@ void hashmap_insert(HashMap map, void* key, void* value)
     node = *prev;
 
     *node = (HashMapNode) {
-        .key = malloc(sizeof(map.key_size)),
-        .value = malloc(sizeof(map.value_size)),
+        .key = malloc(sizeof(map->key_size)),
+        .value = malloc(sizeof(map->value_size)),
         .next = NULL
     };
 
-    memcpy(node->key, key, map.key_size);
-    memcpy(node->value, value, map.value_size);
+    memcpy(node->key, key, map->key_size);
+    memcpy(node->value, value, map->value_size);
 
-    return;
+    map->size++;
 }
 
-size_t hashmap_size(HashMap map)
+void* hashmap_get(HashMap map, const void* key)
 {
-    size_t elements = 0;
+    size_t index = hash_djb2(key, map.key_size) % map.bucket_count;
+    HashMapNode* node = map.buckets[index];
 
-    for (size_t bucket = 0; bucket < map.bucket_count; bucket++)
+    while (node)
     {
-        HashMapNode* node = map.buckets[bucket];
+        if (keys_eq(map, node->key, key)) return node->value;
 
-        while (node)
-        {
-            elements++;
-            node = node->next;
-        }
+        node = node->next;
     }
 
-    return elements;
+    return NULL;
 }
 
-static void print_bytes(void* bytes, size_t amount)
+static void print_bytes(const void* bytes, size_t amount)
 {
     if (!bytes)
     {

@@ -1,7 +1,7 @@
 #include "hash.h"
 #include "../vendor/md5.h"
 
-int hash_djb2(void* data, size_t size)
+int hash_djb2(const void* data, size_t size)
 {
     int hash = 5381;
     for (size_t i = 0; i < size; i++)
@@ -13,7 +13,7 @@ int hash_djb2(void* data, size_t size)
     return hash;
 }
 
-void hash_md5(void* data, size_t size, uint8_t* result)
+void hash_md5(const void* data, size_t size, uint8_t* result)
 {
     MD5Context ctx;
     md5Init(&ctx);

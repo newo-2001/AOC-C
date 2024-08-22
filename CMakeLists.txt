@@ -18,6 +18,7 @@ add_executable(aoc
     src/lib/hash.c
     src/lib/collections/hashmap.h
     src/lib/collections/hashmap.c
+    src/lib/collections/hashset.h
     src/vendor/md5.c
     src/vendor/md5.h
     src/solvers/solvers.h
@@ -25,4 +26,5 @@ add_executable(aoc
     src/solvers/2015/day_02.c
     src/solvers/2015/day_03.c
     src/solvers/2015/day_04.c
+    src/solvers/2015/day_05.c
 )

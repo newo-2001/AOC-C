@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "../solvers.h"
 
-SolverResult solve_2015_day_01_part_1(const char* input) {
+SolverResult solve_2015_day_01_part_1(char* input) {
     SolverResult result;
     int floor = 0;
 
@@ -18,7 +18,7 @@ SolverResult solve_2015_day_01_part_1(const char* input) {
     return result;
 }
 
-SolverResult solve_2015_day_01_part_2(const char* input) {
+SolverResult solve_2015_day_01_part_2(char* input) {
     SolverResult result;
     const char* input_start = input;
     int floor = 0;

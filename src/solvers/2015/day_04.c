@@ -35,7 +35,7 @@ static int first_hash_with_zeros(const char* input, size_t zeros)
     return suffix;
 }
 
-SolverResult solve_2015_day_04_part_1(const char* input)
+SolverResult solve_2015_day_04_part_1(char* input)
 {
     return (SolverResult) {
         .type = RESULT_INT,
@@ -43,7 +43,7 @@ SolverResult solve_2015_day_04_part_1(const char* input)
     };
 }
 
-SolverResult solve_2015_day_04_part_2(const char* input)
+SolverResult solve_2015_day_04_part_2(char* input)
 {
     return (SolverResult) {
         .type = RESULT_INT,

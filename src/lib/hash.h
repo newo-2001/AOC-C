@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-int hash_djb2(void* data, size_t size);
-void hash_md5(void* data, size_t size, uint8_t* result);
+int hash_djb2(const void* data, size_t size);
+void hash_md5(const void* data, size_t size, uint8_t* result);
 
 #endif

@@ -1,4 +1,5 @@
 #define DEBUG 1
+#define SKIP_SLOW_SOLVERS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +19,9 @@ int main()
         solve_2015_day_03_part_1,
         solve_2015_day_03_part_2,
         solve_2015_day_04_part_1,
-        solve_2015_day_04_part_2
+        SLOW_SOLVER(solve_2015_day_04_part_2),
+        solve_2015_day_05_part_1,
+        solve_2015_day_05_part_2
     };
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);
@@ -26,9 +29,19 @@ int main()
     for (unsigned int i = 0; i < NUM_SOLVERS; i++)
     {
         Solver solver = solvers[i];
+
         unsigned int year = 2015 + i / 49;
         unsigned int day = 1 + (i % 49) / 2;
         unsigned int part = 1 + (i % 49 % 2);
+
+        char puzzle_id[sizeof("2015-01-1")];
+        sprintf(&puzzle_id[0],"%i-%02i-%i", year, day, part);
+
+        if (!solver)
+        {
+            printf("[%s] [SKIP] Skipping due to long execution time\n", puzzle_id);
+            continue;
+        }
 
         char input_path[sizeof("inputs/2015/day_01.txt")];
         sprintf_s(&input_path[0], sizeof(input_path), "inputs/%i/day_%02i.txt", year, day);
@@ -86,11 +99,11 @@ int main()
 
         if (!strcmp(result_str, solution))
         {
-            printf("[%i-%02i-%i] [PASS] %s\n", year, day, part, result_str);
+            printf("[%s] [PASS] %s\n", puzzle_id, result_str);
         }
         else
         {
-            fprintf(stderr, "[%i-%02i-%i] [FAIL] got %s, expected: %s\n", year, day, part, result_str, solution);
+            fprintf(stderr, "[%s] [FAIL] got %s, expected: %s\n", puzzle_id, result_str, solution);
         }
 
         free(result_str);
