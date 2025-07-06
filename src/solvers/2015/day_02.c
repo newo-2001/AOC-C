@@ -1,7 +1,8 @@
 #include "../solvers.h"
+#include "../../lib/math.h"
 #include <string.h>
 #include <stdio.h>
-#include <minmax.h>
+#include <stdlib.h>
 
 typedef struct Present
 {
@@ -17,7 +18,7 @@ static Present parse_present(const char* str)
     return present;
 }
 
-static inline unsigned int wrapping_paper(Present present)
+static unsigned int wrapping_paper(Present present)
 {
     unsigned int front = present.height * present.width;
     unsigned int side = present.height * present.length;
@@ -27,7 +28,7 @@ static inline unsigned int wrapping_paper(Present present)
     return 2 * (front + side + top) + slack;
 }
 
-static inline unsigned int ribbon(Present present)
+static unsigned int ribbon(Present present)
 {
     unsigned int bow = present.width * present.height * present.length;
     unsigned int front = present.height + present.width;
@@ -37,10 +38,11 @@ static inline unsigned int ribbon(Present present)
     return 2 * min(min(front, side), top) + bow;
 }
 
-SolverResult solve_2015_day_02_part_1(char* input)
+SolverResult solve_2015_day_02_part_1(const char* _input)
 {
     unsigned int total_wrapping_paper = 0;
 
+    char* input = strdup(_input);
     strtok(input, "\n");
 
     do
@@ -48,22 +50,27 @@ SolverResult solve_2015_day_02_part_1(char* input)
         total_wrapping_paper += wrapping_paper(parse_present(input));
     } while ((input = strtok(NULL, "\n")));
 
+    free(input);
+
     return (SolverResult) {
         .type = RESULT_INT,
         .integer_result = (int) total_wrapping_paper
     };
 }
 
-SolverResult solve_2015_day_02_part_2(char* input)
+SolverResult solve_2015_day_02_part_2(const char* _input)
 {
     unsigned int total_ribbon = 0;
 
+    char* input = strdup(_input);
     strtok(input, "\n");
 
     do
     {
         total_ribbon += ribbon(parse_present(input));
     } while ((input = strtok(NULL, "\n")));
+
+    free(input);
 
     return (SolverResult) {
         .type = RESULT_INT,

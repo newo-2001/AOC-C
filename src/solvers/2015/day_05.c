@@ -1,7 +1,8 @@
 #include "../solvers.h"
 #include "../../constants.h"
 #include "../../lib/collections/hashset.h"
-#include <strings.h>
+#include <string.h>
+#include <stdlib.h>
 
 static inline bool is_vowel(char c)
 {
@@ -28,15 +29,19 @@ static inline bool is_nice(const char* str)
     return vowels >= 3 && duplicates > 0;
 }
 
-SolverResult solve_2015_day_05_part_1(char* input)
+SolverResult solve_2015_day_05_part_1(const char* _input)
 {
     size_t nice_strings = 0;
+
+    char* input = strdup(_input);
     strtok(input, "\n");
 
     do
     {
         nice_strings += (int) is_nice(input);
     } while ((input = strtok(NULL, "\n")));
+
+    free(input);
 
     return (SolverResult) {
         .type = RESULT_INT,
@@ -89,15 +94,19 @@ static bool is_nice_v2(const char* str)
     return false;
 }
 
-SolverResult solve_2015_day_05_part_2(char* input)
+SolverResult solve_2015_day_05_part_2(const char* _input)
 {
     size_t nice_strings = 0;
+
+    char* input = strdup(_input);
     strtok(input, "\n");
 
     do
     {
         nice_strings += is_nice_v2(input);;
     } while ((input = strtok(NULL, "\n")));
+
+    free(input);
 
     return (SolverResult) {
         .type = RESULT_INT,

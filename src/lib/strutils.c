@@ -1,3 +1,4 @@
+#include <string.h>
 #include "strutils.h"
 
 bool is_whitespace(char c) {
@@ -10,5 +11,17 @@ bool is_whitespace(char c) {
             return true;
         default:
             return false;
+    }
+}
+
+const char* skip_str(const char* source, const char* str)
+{
+    if (strstr(source, str) == source)
+    {
+        return source + strlen(str);
+    }
+    else
+    {
+        return NULL;
     }
 }

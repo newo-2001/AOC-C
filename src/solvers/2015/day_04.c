@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "../solvers.h"
 #include "../../lib/hash.h"
 #include "../../constants.h"
@@ -21,12 +22,13 @@ static int first_hash_with_zeros(const char* input, size_t zeros)
     int suffix = 0;
 
     size_t key_length = strlen(input);
-    char* key = malloc(key_length + 10);
+    char* key = malloc(key_length + 11);
     memcpy(&key[0], input, key_length);
 
     do
     {
-        itoa(++suffix, key + key_length, 10);
+        snprintf(key + key_length, 11, "%d", ++suffix);
+        //itoa(++suffix, key + key_length, 10);
         hash_md5(&key[0], strlen(key), &digest[0]);
     } while (!has_leading_zeros(&digest[0], zeros));
 
@@ -35,7 +37,7 @@ static int first_hash_with_zeros(const char* input, size_t zeros)
     return suffix;
 }
 
-SolverResult solve_2015_day_04_part_1(char* input)
+SolverResult solve_2015_day_04_part_1(const char* input)
 {
     return (SolverResult) {
         .type = RESULT_INT,
@@ -43,7 +45,7 @@ SolverResult solve_2015_day_04_part_1(char* input)
     };
 }
 
-SolverResult solve_2015_day_04_part_2(char* input)
+SolverResult solve_2015_day_04_part_2(const char* input)
 {
     return (SolverResult) {
         .type = RESULT_INT,

@@ -19,7 +19,7 @@ typedef struct SolverResult
     };
 } SolverResult;
 
-typedef SolverResult (*Solver)(char* input);
+typedef SolverResult (*Solver)(const char* input);
 
 #ifdef SKIP_SLOW_SOLVERS
 #define SLOW_SOLVER(solver) NULL
@@ -27,15 +27,16 @@ typedef SolverResult (*Solver)(char* input);
 #define SLOW_SOLVER(solver) solver
 #endif
 
-SolverResult solve_2015_day_01_part_1(char* input);
-SolverResult solve_2015_day_01_part_2(char* input);
-SolverResult solve_2015_day_02_part_1(char* input);
-SolverResult solve_2015_day_02_part_2(char* input);
-SolverResult solve_2015_day_03_part_1(char* input);
-SolverResult solve_2015_day_03_part_2(char* input);
-SolverResult solve_2015_day_04_part_1(char* input);
-SolverResult solve_2015_day_04_part_2(char* input);
-SolverResult solve_2015_day_05_part_1(char* input);
-SolverResult solve_2015_day_05_part_2(char* input);
+SolverResult solve_2015_day_01_part_1(const char* input);
+SolverResult solve_2015_day_01_part_2(const char* input);
+SolverResult solve_2015_day_02_part_1(const char* input);
+SolverResult solve_2015_day_02_part_2(const char* input);
+SolverResult solve_2015_day_03_part_1(const char* input);
+SolverResult solve_2015_day_03_part_2(const char* input);
+SolverResult solve_2015_day_04_part_1(const char* input);
+SolverResult solve_2015_day_04_part_2(const char* input);
+SolverResult solve_2015_day_05_part_1(const char* input);
+SolverResult solve_2015_day_05_part_2(const char* input);
+SolverResult solve_2015_day_06_part_1(const char* input);
 
 #endif

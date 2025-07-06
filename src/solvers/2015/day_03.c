@@ -14,7 +14,7 @@ static inline Direction parse_direction(char direction)
     }
 }
 
-SolverResult solve_2015_day_03_part_1(char* input)
+SolverResult solve_2015_day_03_part_1(const char* input)
 {
     Vec2 position = { 0, 0 };
     HashSet visited = hashset_new(sizeof(Vec2), 1000);
@@ -36,7 +36,7 @@ SolverResult solve_2015_day_03_part_1(char* input)
     return result;
 }
 
-SolverResult solve_2015_day_03_part_2(char* input)
+SolverResult solve_2015_day_03_part_2(const char* input)
 {
     HashSet visited = hashset_new(sizeof(Vec2), 1000);
     Vec2 santa_pos = { 0, 0 };

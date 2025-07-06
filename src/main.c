@@ -1,13 +1,20 @@
-#define DEBUG 1
 #define SKIP_SLOW_SOLVERS
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <stdint.h>
+
 #include "lib/strutils.h"
 #include "solvers/solvers.h"
+#include "timer.h"
 
 char* read_file(const char* path);
+
+int hash_day(unsigned int year, unsigned int day) {
+    return day * 50 + year;
+}
 
 int main()
 {
@@ -21,10 +28,14 @@ int main()
         solve_2015_day_04_part_1,
         SLOW_SOLVER(solve_2015_day_04_part_2),
         solve_2015_day_05_part_1,
-        solve_2015_day_05_part_2
+        solve_2015_day_05_part_2,
+        solve_2015_day_06_part_1
     };
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);
+
+    int last_day_hash = 0;
+    char* input = NULL;
 
     for (unsigned int i = 0; i < NUM_SOLVERS; i++)
     {
@@ -43,17 +54,24 @@ int main()
             continue;
         }
 
-        char input_path[sizeof("inputs/2015/day_01.txt")];
-        sprintf_s(&input_path[0], sizeof(input_path), "inputs/%i/day_%02i.txt", year, day);
-        
-        char* input = read_file(input_path);
-        if (!input) return -1;
+        int day_hash = hash_day(year, day);
+        if (last_day_hash != day_hash) {
+            if (input) free(input);
+            last_day_hash = day_hash;
 
+            char input_path[sizeof("inputs/2015/day_01.txt")];
+            snprintf(&input_path[0], sizeof(input_path), "inputs/%i/day_%02i.txt", year, day);
+            
+            input = read_file(input_path);
+            if (!input) return -1;
+        }
+
+        timer_start();
         SolverResult result = solver(input);
-        free(input);
+        Duration duration = timer_stop();
 
         char solution_path[sizeof("solutions/2015/day_01.txt")];
-        sprintf_s(&solution_path[0], sizeof(solution_path), "solutions/%i/day_%02i.txt", year, day);
+        snprintf(&solution_path[0], sizeof(solution_path), "solutions/%i/day_%02i.txt", year, day);
 
         char* solutions = read_file(solution_path);
         if (!solutions) return -1;
@@ -74,19 +92,19 @@ int main()
             {
                 size_t length = result.integer_result / 10 + 3;
                 result_str = malloc(sizeof(char) * length);
-                sprintf_s(result_str, length, "%d", result.integer_result);
+                snprintf(result_str, length, "%d", result.integer_result);
                 break;
             }
             case RESULT_STRING:
             case RESULT_STATIC_STRING:
-                result_str = (char*) result.string_result;
+                result_str = (char *) result.string_result;
                 break;
             case RESULT_ERR:
             case RESULT_STATIC_ERR:
             {
                 size_t length = strlen(result.string_result) + sizeof("Error(\"\")");
                 result_str = malloc(length),
-                sprintf_s(result_str, length, "Error(\"%s\")", result.string_result);
+                    snprintf(result_str, length, "Error(\"%s\")", result.string_result);
 
                 if (result.type == RESULT_ERR)
                 {
@@ -99,13 +117,14 @@ int main()
 
         if (!strcmp(result_str, solution))
         {
-            printf("[%s] [PASS] %s\n", puzzle_id, result_str);
+            printf("[%s] [PASS] [%02u.%03d:%03d] %s\n", puzzle_id, duration.seconds, duration.millis, duration.micros, result_str);
         }
         else
         {
             fprintf(stderr, "[%s] [FAIL] got %s, expected: %s\n", puzzle_id, result_str, solution);
         }
 
+        free(solutions);
         free(result_str);
     }
 }
@@ -123,7 +142,7 @@ char* read_file(const char* path)
     size_t length = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char* buffer = (char*) malloc(sizeof(char) * (length + 1));
+    char* buffer = malloc(sizeof(char) * (length + 1));
     size_t read = fread(buffer, sizeof(char), length, file);
     buffer[read] = '\0';
 

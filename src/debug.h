@@ -12,7 +12,7 @@ void _assert_impl(bool expr, const char* expr_str, const char* file, uint32_t li
     exit(1);
 }
 
-#ifdef DEBUG
+#ifndef NDEBUG
 # define assert(expr) _assert_impl(expr, #expr, __FILE__, __LINE__)
 # else
 # define assert(expr) ;
