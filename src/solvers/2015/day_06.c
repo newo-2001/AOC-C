@@ -1,17 +1,22 @@
 #include "../solvers.h"
 #include "../../lib/geometry.h"
 #include "../../lib/strutils.h"
+#include "../../lib/math.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
 
 typedef enum InstructionType
 {
     INST_DISABLE,
     INST_ENABLE,
-    INST_TOGGLE
+    INST_TOGGLE,
+    INST_INC,
+    INST_DEC,
+    INST_INC2
 } InstructionType;
 
 typedef struct Area
@@ -51,39 +56,50 @@ static Instruction parse_instruction(const char* str)
 #define GRID_HEIGHT 1000
 #define GRID_SIZE (GRID_WIDTH * GRID_HEIGHT)
 
-static void execute_instruction(Instruction instruction, uint8_t* grid)
+static void execute_instruction(Instruction instruction, uint32_t* grid)
 {
     for (int y = instruction.area.top_left.y; y <= instruction.area.bottom_right.y; y++)
     {
-        uint8_t* row_start = grid + y * GRID_WIDTH;
+        for (int x = instruction.area.top_left.x; x <= instruction.area.bottom_right.x; x++)
+        {
+            uint32_t* cell = grid + y * GRID_WIDTH + x;
 
-        if (instruction.type == INST_TOGGLE)
-        {
-            for (int x = instruction.area.top_left.x; x <= instruction.area.bottom_right.x; x++)
+            switch (instruction.type)
             {
-                uint8_t* cell = row_start + x;
-                *cell = !*cell;
+                case INST_ENABLE:
+                    *cell = true;
+                    break;
+                case INST_DISABLE:
+                    *cell = false;
+                    break;
+                case INST_TOGGLE:
+                    *cell = !*cell;
+                    break;
+                case INST_INC:
+                    (*cell)++;
+                    break;
+                case INST_DEC:
+                    *cell = *cell == 0 ? 0 : *cell - 1;
+                    break;
+                case INST_INC2:
+                    (*cell) += 2;
+                    break;
             }
-        }
-        else
-        {
-            size_t size = instruction.area.bottom_right.x - instruction.area.top_left.x + 1;
-            memset(row_start + instruction.area.top_left.x, (bool) instruction.type, size);
         }
     }
 }
 
-static int count_lights(uint8_t* grid) {
+static int sum_lights(uint32_t* grid) {
     int count = 0;
     for (size_t i = 0; i < GRID_SIZE; i++)
     {
-        count += grid[i] == true;
+        count += grid[i];
     }
 
     return count;
 }
 
-SolverResult solve_2015_day_06_part_1(const char* _input)
+static SolverResult solve(const char* _input, Instruction (*instruction_set)(Instruction))
 {
     SolverResult result;
     result.type = RESULT_INT;
@@ -91,17 +107,42 @@ SolverResult solve_2015_day_06_part_1(const char* _input)
     char* input = strdup(_input);
     strtok(input, "\n");
 
-    uint8_t* grid = calloc(GRID_SIZE, sizeof(uint8_t));
+    uint32_t* grid = calloc(GRID_SIZE, sizeof(uint32_t));
 
     do
     {
-        Instruction instruction = parse_instruction(input);
+        Instruction instruction = instruction_set(parse_instruction(input));
         execute_instruction(instruction, grid);
     } while ((input = strtok(NULL, "\n")));
 
-    result.integer_result = count_lights(grid);
+    result.integer_result = sum_lights(grid);
 
     free(grid);
     free(input);
     return result;
 }
+
+static Instruction digital(Instruction instruction) { return instruction; }
+
+static Instruction analog(Instruction instruction)
+{
+    switch (instruction.type)
+    {
+        case INST_ENABLE:
+            instruction.type = INST_INC;
+            break;
+        case INST_DISABLE:
+            instruction.type = INST_DEC;
+            break;
+        case INST_TOGGLE:
+            instruction.type = INST_INC2;
+            break;
+        default:
+            assert(false);
+    }
+
+    return instruction;
+}
+
+SolverResult solve_2015_day_06_part_1(const char* input) { return solve(input, digital); }
+SolverResult solve_2015_day_06_part_2(const char* input) { return solve(input, analog); }

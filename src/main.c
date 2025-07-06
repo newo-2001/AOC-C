@@ -29,7 +29,8 @@ int main()
         SLOW_SOLVER(solve_2015_day_04_part_2),
         solve_2015_day_05_part_1,
         solve_2015_day_05_part_2,
-        solve_2015_day_06_part_1
+        solve_2015_day_06_part_1,
+        solve_2015_day_06_part_2
     };
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);
