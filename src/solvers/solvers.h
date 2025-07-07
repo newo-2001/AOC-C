@@ -39,5 +39,7 @@ SolverResult solve_2015_day_05_part_1(const char* input);
 SolverResult solve_2015_day_05_part_2(const char* input);
 SolverResult solve_2015_day_06_part_1(const char* input);
 SolverResult solve_2015_day_06_part_2(const char* input);
+SolverResult solve_2015_day_07_part_1(const char* input);
+SolverResult solve_2015_day_07_part_2(const char* input);
 
 #endif

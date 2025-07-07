@@ -1,3 +1,6 @@
+#ifndef AOC_TIMER_H
+#define AOC_TIMER_H
+
 #include "stddef.h"
 
 typedef struct Duration
@@ -10,3 +13,4 @@ typedef struct Duration
 void timer_start();
 
 Duration timer_stop();
+#endif

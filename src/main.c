@@ -12,7 +12,8 @@
 
 char* read_file(const char* path);
 
-int hash_day(unsigned int year, unsigned int day) {
+int hash_day(unsigned int year, unsigned int day)
+{
     return day * 50 + year;
 }
 
@@ -30,7 +31,9 @@ int main()
         solve_2015_day_05_part_1,
         solve_2015_day_05_part_2,
         solve_2015_day_06_part_1,
-        solve_2015_day_06_part_2
+        solve_2015_day_06_part_2,
+        solve_2015_day_07_part_1,
+        solve_2015_day_07_part_2
     };
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);

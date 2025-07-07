@@ -1,27 +1,40 @@
 #include "hashmap.h"
 #include "../../constants.h"
 #include "../hash.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-static bool keys_eq(HashMap map, const void* left, const void* right)
+static bool keys_eq(const void* a, const void* b, size_t key_size)
 {
-    if (left && right)
+    if (a && b)
     {
-        return !memcmp(left, right, map.key_size);
+        return !memcmp(a, b, key_size);
     }
-    else return !(left || right);
+
+    return !(a || b);
 }
 
-HashMap hashmap_new(size_t key_size, size_t value_size, size_t buckets)
+HashMapOptions hashmap_default_options()
+{
+    return (HashMapOptions) {
+        .bucket_count = 1000,
+        .key_comparer = keys_eq,
+        .hash_function = hash_djb2
+    };
+}
+
+HashMap hashmap_new(size_t key_size, size_t value_size, HashMapOptions options)
 {
     return (HashMap) {
         .size = 0,
-        .bucket_count = buckets,
+        .bucket_count = options.bucket_count,
         .key_size = key_size,
         .value_size = value_size,
-        .buckets = calloc(buckets, sizeof(HashMapNode*))
+        .key_comparer = options.key_comparer,
+        .hash_function = options.hash_function,
+        .buckets = calloc(options.bucket_count, sizeof(HashMapNode*))
     };
 }
 
@@ -47,13 +60,13 @@ void hashmap_destroy(HashMap map)
 
 void hashmap_insert(HashMap* map, const void* key, const void* value)
 {
-    size_t index = hash_djb2(key, map->key_size) % map->bucket_count;
+    size_t index = map->hash_function(key, map->key_size) % map->bucket_count;
     HashMapNode** prev = &map->buckets[index];
     HashMapNode* node = *prev;
 
     while (node)
     {
-        if (keys_eq(*map, node->key, key))
+        if (map->key_comparer(node->key, key, map->key_size))
         {
             memcpy(node->value, value, map->value_size);
             return;
@@ -67,8 +80,8 @@ void hashmap_insert(HashMap* map, const void* key, const void* value)
     node = *prev;
 
     *node = (HashMapNode) {
-        .key = malloc(sizeof(map->key_size)),
-        .value = malloc(sizeof(map->value_size)),
+        .key = malloc(map->key_size),
+        .value = malloc(map->value_size),
         .next = NULL
     };
 
@@ -80,12 +93,15 @@ void hashmap_insert(HashMap* map, const void* key, const void* value)
 
 void* hashmap_get(HashMap map, const void* key)
 {
-    size_t index = hash_djb2(key, map.key_size) % map.bucket_count;
+    size_t index = map.hash_function(key, map.key_size) % map.bucket_count;
     HashMapNode* node = map.buckets[index];
 
     while (node)
     {
-        if (keys_eq(map, node->key, key)) return node->value;
+        if (map.key_comparer(node->key, key, map.key_size))
+        {
+            return node->value;
+        }
 
         node = node->next;
     }
@@ -93,26 +109,9 @@ void* hashmap_get(HashMap map, const void* key)
     return NULL;
 }
 
-static void print_bytes(const void* bytes, size_t amount)
+void hashmap_dbg(HashMap map, HashMapDebugFormatter key_formatter, HashMapDebugFormatter value_formatter)
 {
-    if (!bytes)
-    {
-        printf("NULL");
-        return;
-    }
-
-    printf("{");
-    for (size_t i = 0; i < amount; i++)
-    {
-        printf(" %02X", ((unsigned char*) bytes)[i]);
-    }
-    printf(" }");
-}
-
-void hashmap_debug(HashMap map)
-{
-    size_t size = hashmap_size(map);
-    printf("HashMap[%d] {\n", (int) size);
+    printf("HashMap[%d] {\n", (int) map.size);
 
     for (size_t bucket = 0; bucket < map.bucket_count; bucket++)
     {
@@ -122,17 +121,55 @@ void hashmap_debug(HashMap map)
 
         while (node)
         {
-            printf(" (");
-            print_bytes(node->key, map.key_size);
-            printf(": ");
-            print_bytes(node->value, map.value_size);
-            printf(") ->");
+            fputs(" (", stdout);
+            key_formatter(node->key, map.key_size);
+            fputs(": ", stdout);
+            value_formatter(node->value, map.value_size);
+            fputs(") ->", stdout);
 
             node = node->next;
         }
 
-        printf("\n");
+        puts("");
     }
 
-    printf("}\n");
+    puts("}\n");
+}
+
+bool hashmap_str_eq(const void* a, const void* b, size_t key_size)
+{
+    (void) key_size;
+
+    if (a && b) {
+        return !strcmp(a, b);
+    }
+    
+    return !(a || b);
+}
+
+int hashmap_str_hash(const void* data, size_t size) {
+    (void) size;
+    return hash_djb2(data, strlen(data));
+}
+
+void hashmap_dbg_fmt_hex(const void* data, size_t size)
+{
+    if (!data)
+    {
+        fputs("NULL", stdout);
+        return;
+    }
+
+    fputs("{", stdout);
+    for (size_t i = 0; i < size; i++)
+    {
+        printf(" %02X", ((uint8_t*) data)[i]);
+    }
+    fputs(" }", stdout);
+}
+
+void hashmap_dbg_fmt_str(const void* data, size_t size)
+{
+    (void) size;
+    fputs(data, stdout);
 }

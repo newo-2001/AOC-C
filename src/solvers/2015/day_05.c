@@ -52,7 +52,7 @@ SolverResult solve_2015_day_05_part_1(const char* _input)
 // Don't ask me how this thing works..
 static bool is_nice_v2(const char* str)
 {
-    HashSet seen_pairs = hashset_new(sizeof(char[2]), 100);
+    HashSet seen_pairs = hashset_new(sizeof(char[2]), hashmap_default_options());
     size_t length = strlen(str);
 
     bool seen_pair_twice = false;

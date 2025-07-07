@@ -14,7 +14,6 @@ file(COPY solutions DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(aoc
     src/main.c
-    src/debug.h
     src/constants.h
     src/timer.h
     src/timer.c
@@ -41,4 +40,5 @@ add_executable(aoc
     src/solvers/2015/day_04.c
     src/solvers/2015/day_05.c
     src/solvers/2015/day_06.c
+    src/solvers/2015/day_07.c
 )

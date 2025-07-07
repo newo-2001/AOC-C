@@ -1,7 +1,6 @@
 #include "../solvers.h"
 #include "../../lib/geometry.h"
 #include "../../lib/strutils.h"
-#include "../../lib/math.h"
 
 #include <stdio.h>
 #include <string.h>
