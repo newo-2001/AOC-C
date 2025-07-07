@@ -41,4 +41,5 @@ add_executable(aoc
     src/solvers/2015/day_05.c
     src/solvers/2015/day_06.c
     src/solvers/2015/day_07.c
+    src/solvers/2015/day_08.c
 )
