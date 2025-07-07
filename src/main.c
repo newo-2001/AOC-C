@@ -34,7 +34,8 @@ int main()
         solve_2015_day_06_part_2,
         solve_2015_day_07_part_1,
         solve_2015_day_07_part_2,
-        solve_2015_day_08_part_1
+        solve_2015_day_08_part_1,
+        solve_2015_day_08_part_2
     };
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);

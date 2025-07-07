@@ -27,20 +27,23 @@ typedef SolverResult (*Solver)(const char* input);
 #define SLOW_SOLVER(solver) solver
 #endif
 
-SolverResult solve_2015_day_01_part_1(const char* input);
-SolverResult solve_2015_day_01_part_2(const char* input);
-SolverResult solve_2015_day_02_part_1(const char* input);
-SolverResult solve_2015_day_02_part_2(const char* input);
-SolverResult solve_2015_day_03_part_1(const char* input);
-SolverResult solve_2015_day_03_part_2(const char* input);
-SolverResult solve_2015_day_04_part_1(const char* input);
-SolverResult solve_2015_day_04_part_2(const char* input);
-SolverResult solve_2015_day_05_part_1(const char* input);
-SolverResult solve_2015_day_05_part_2(const char* input);
-SolverResult solve_2015_day_06_part_1(const char* input);
-SolverResult solve_2015_day_06_part_2(const char* input);
-SolverResult solve_2015_day_07_part_1(const char* input);
-SolverResult solve_2015_day_07_part_2(const char* input);
-SolverResult solve_2015_day_08_part_1(const char* input);
+#define SOLVERS_PART(year, day, part) \
+    SolverResult solve_ ## year ## _day_ ## day ## _part_ ## part (const char* input);
+
+#define SOLVERS_DAY(year, day) \
+    SOLVERS_PART(year, day, 1) \
+    SOLVERS_PART(year, day, 2)
+
+SOLVERS_DAY(2015, 01)
+SOLVERS_DAY(2015, 02)
+SOLVERS_DAY(2015, 03)
+SOLVERS_DAY(2015, 04)
+SOLVERS_DAY(2015, 05)
+SOLVERS_DAY(2015, 06)
+SOLVERS_DAY(2015, 07)
+SOLVERS_DAY(2015, 08)
+
+#undef SOLVE_DAY
+#undef SOLVE_PART
 
 #endif

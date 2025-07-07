@@ -6,7 +6,7 @@
 
 static int deflated_size(const char* escaped_str)
 {
-    int size = 0;
+    int size = strlen(escaped_str) + 2;
 
     while (*escaped_str)
     {
@@ -15,21 +15,35 @@ static int deflated_size(const char* escaped_str)
             escaped_str += 2;
         }
         
+        size--;
+    }
+
+    return size;
+}
+
+static int escaped_size(const char* str)
+{
+    int size = -strlen(str);
+
+    char c;
+    while ((c = *(str++)))
+    {
+        if (c == '\\' || c == '"') size++;
         size++;
     }
 
-    return size - 2;
+    return size + 2;
 }
 
-SolverResult solve_2015_day_08_part_1(const char* _input)
+SolverResult solve(const char* _input, int (*measure)(const char*))
 {
     char* input = strdup(_input);
     const char* line = strtok(input, "\n");
-    int code_overhead = 0;
+    int result = 0;
 
     while (line)
     {
-        code_overhead += strlen(line) - deflated_size(line);
+        result += measure(line);
         line = strtok(NULL, "\n");
     }
 
@@ -37,6 +51,9 @@ SolverResult solve_2015_day_08_part_1(const char* _input)
 
     return (SolverResult) {
         .type = RESULT_INT,
-        .integer_result = code_overhead
+        .integer_result = result
     };
 }
+
+SolverResult solve_2015_day_08_part_1(const char* input) { return solve(input, deflated_size); }
+SolverResult solve_2015_day_08_part_2(const char* input) { return solve(input, escaped_size); }
