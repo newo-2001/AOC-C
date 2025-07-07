@@ -79,7 +79,7 @@ static void parse_expr(char* input, HashMap* map) {
     }
 
     const char* var = strtok(NULL, delim);
-    hashmap_insert(map, var, &expr);
+    hashmap_insert(map, &var, &expr);
 }
 
 static uint16_t value_eval(HashMap circuit, HashMap cache, Value value);
@@ -114,13 +114,13 @@ static uint16_t value_eval(HashMap circuit, HashMap cache, Value value)
     assert(value.type == VAL_VAR);
 
     {
-        uint16_t* cached_result = hashmap_get(cache, value.variable);
+        uint16_t* cached_result = hashmap_get(cache, &value.variable);
         if (cached_result != NULL) return *cached_result;
     }
 
-    Expression* expr = hashmap_get(circuit, value.variable);
+    Expression* expr = hashmap_get(circuit, &value.variable);
     uint16_t result = expr_eval(circuit, cache, *expr);
-    hashmap_insert(&cache, value.variable, &result);
+    hashmap_insert(&cache, &value.variable, &result);
     return result;
 }
 
@@ -132,10 +132,11 @@ static HashMap build_circuit(char* input) {
     HashMap circuit = hashmap_new(sizeof(const char*), sizeof(Expression), options);
     
     char* line = strtok_r(input, "\n", &input);
-    do 
+    while (line)
     {
         parse_expr(line, &circuit);
-    } while ((line = strtok_r(NULL, "\n", &input)));
+        line = strtok_r(NULL, "\n", &input);
+    }
 
     return circuit;
 }
@@ -174,6 +175,8 @@ SolverResult solve_2015_day_07_part_1(const char* _input)
     };
 }
 
+static const char* THE_LETTER_B = "b";
+
 SolverResult solve_2015_day_07_part_2(const char* _input)
 {
     char* input = strdup(_input);
@@ -186,7 +189,7 @@ SolverResult solve_2015_day_07_part_2(const char* _input)
         .constant = solve_circuit(circuit, "a")
     };
 
-    hashmap_insert(&circuit, "b", &b);
+    hashmap_insert(&circuit, &THE_LETTER_B, &b);
     uint16_t result = solve_circuit(circuit, "a");
 
     hashmap_destroy(circuit);

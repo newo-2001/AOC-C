@@ -131,6 +131,8 @@ int main()
         free(solutions);
         free(result_str);
     }
+
+    if (input) free(input);
 }
 
 char* read_file(const char* path)

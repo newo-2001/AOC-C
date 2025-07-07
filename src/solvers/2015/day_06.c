@@ -103,16 +103,17 @@ static SolverResult solve(const char* _input, Instruction (*instruction_set)(Ins
     SolverResult result;
     result.type = RESULT_INT;
 
-    char* input = strdup(_input);
-    strtok(input, "\n");
-
     uint32_t* grid = calloc(GRID_SIZE, sizeof(uint32_t));
 
-    do
+    char* input = strdup(_input);
+    const char* line = strtok(input, "\n");
+
+    while (line)
     {
-        Instruction instruction = instruction_set(parse_instruction(input));
+        Instruction instruction = instruction_set(parse_instruction(line));
         execute_instruction(instruction, grid);
-    } while ((input = strtok(NULL, "\n")));
+        line = strtok(NULL, "\n");
+    }
 
     result.integer_result = sum_lights(grid);
 

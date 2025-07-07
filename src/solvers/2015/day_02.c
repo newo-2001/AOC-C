@@ -43,12 +43,13 @@ SolverResult solve_2015_day_02_part_1(const char* _input)
     unsigned int total_wrapping_paper = 0;
 
     char* input = strdup(_input);
-    strtok(input, "\n");
+    const char* line = strtok(input, "\n");
 
-    do
+    while (line)
     {
-        total_wrapping_paper += wrapping_paper(parse_present(input));
-    } while ((input = strtok(NULL, "\n")));
+        total_wrapping_paper += wrapping_paper(parse_present(line));
+        line = strtok(NULL, "\n");
+    }
 
     free(input);
 
@@ -63,12 +64,13 @@ SolverResult solve_2015_day_02_part_2(const char* _input)
     unsigned int total_ribbon = 0;
 
     char* input = strdup(_input);
-    strtok(input, "\n");
+    char* line = strtok(input, "\n");
 
-    do
+    while (line)
     {
-        total_ribbon += ribbon(parse_present(input));
-    } while ((input = strtok(NULL, "\n")));
+        total_ribbon += ribbon(parse_present(line));
+        line = strtok(NULL, "\n");
+    }
 
     free(input);
 

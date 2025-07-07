@@ -34,12 +34,13 @@ SolverResult solve_2015_day_05_part_1(const char* _input)
     size_t nice_strings = 0;
 
     char* input = strdup(_input);
-    strtok(input, "\n");
+    char* line = strtok(input, "\n");
 
-    do
+    while (line)
     {
-        nice_strings += (int) is_nice(input);
-    } while ((input = strtok(NULL, "\n")));
+        nice_strings += (int) is_nice(line);
+        line = strtok(NULL, "\n");
+    }
 
     free(input);
 
@@ -88,8 +89,14 @@ static bool is_nice_v2(const char* str)
             hashset_insert(&seen_pairs, &str[i]);
         }
 
-        if (seen_triplet && seen_pair_twice) return true;
+        if (seen_triplet && seen_pair_twice)
+        {
+            hashset_destroy(seen_pairs);
+            return true;
+        }
     }
+
+    hashset_destroy(seen_pairs);
 
     return false;
 }
@@ -99,12 +106,13 @@ SolverResult solve_2015_day_05_part_2(const char* _input)
     size_t nice_strings = 0;
 
     char* input = strdup(_input);
-    strtok(input, "\n");
+    const char* line = strtok(input, "\n");
 
-    do
+    while (line)
     {
-        nice_strings += is_nice_v2(input);;
-    } while ((input = strtok(NULL, "\n")));
+        nice_strings += is_nice_v2(line);
+        line = strtok(NULL, "\n");
+    }
 
     free(input);
 

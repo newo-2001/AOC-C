@@ -76,7 +76,7 @@ void hashmap_insert(HashMap* map, const void* key, const void* value)
         node = node->next;
     }
 
-    *prev = (HashMapNode*) malloc(sizeof(HashMapNode));
+    *prev = malloc(sizeof(HashMapNode));
     node = *prev;
 
     *node = (HashMapNode) {
@@ -140,16 +140,21 @@ bool hashmap_str_eq(const void* a, const void* b, size_t key_size)
 {
     (void) key_size;
 
-    if (a && b) {
-        return !strcmp(a, b);
+    const char* a_str = *((char**) a);
+    const char* b_str = *((char**) b);
+
+    if (a_str && b_str) {
+        return !strcmp(a_str, b_str);
     }
     
-    return !(a || b);
+    return !(a_str || b_str);
 }
 
 int hashmap_str_hash(const void* data, size_t size) {
     (void) size;
-    return hash_djb2(data, strlen(data));
+
+    const char* str = *((const char**) data);
+    return hash_djb2(str, strlen(str));
 }
 
 void hashmap_dbg_fmt_hex(const void* data, size_t size)
@@ -171,5 +176,7 @@ void hashmap_dbg_fmt_hex(const void* data, size_t size)
 void hashmap_dbg_fmt_str(const void* data, size_t size)
 {
     (void) size;
-    fputs(data, stdout);
+    
+    const char* str = *((const char**) data);
+    fputs(str, stdout);
 }
