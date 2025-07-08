@@ -2,24 +2,73 @@
     "version": 6,
     "configurePresets": [
         {
-            "name": "Debug",
-            "displayName": "Debug",
-            "binaryDir": "build/debug",
+            "name": "base",
+            "hidden": true,
             "generator": "Ninja",
+            "binaryDir": "build/${presetName}"
+        },
+        {
+            "name": "windows",
+            "hidden": true,
+            "inherits": "base",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_C_FLAGS": "/W4 /WX"
+            }
+        },
+        {
+            "name": "linux",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
                 "CMAKE_C_FLAGS": "-Wall -Wextra -Werror"
             }
         },
         {
-            "name": "Release",
-            "displayName": "Release",
-            "binaryDir": "build/release",
-            "generator": "Ninja",
+            "name": "debug",
+            "hidden": true,
+            "inherits": "base",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "CMAKE_C_FLAGS": "-Wall -Wextra -Werror"
+                "CMAKE_BUILD_TYPE": "Debug"
             }
+        },
+        {
+            "name": "release",
+            "hidden": true,
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo" 
+            }
+        },
+        {
+            "name": "Windows-Debug",
+            "displayName": "Windows (Debug)",
+            "inherits": ["windows", "debug"]
+        },
+        {
+            "name": "Windows-Release",
+            "displayName": "Windows (Release)",
+            "inherits": ["windows", "release"]
+        },
+        {
+            "name": "Linux-Debug",
+            "displayName": "Linux (Debug)",
+            "inherits": ["linux", "debug"]
+        },
+        {
+            "name": "Linux-Release",
+            "displayName": "Linux (Release)",
+            "inherits": ["linux", "release"]
         }
     ]
 }
