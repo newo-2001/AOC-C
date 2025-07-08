@@ -2,11 +2,10 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
 
-static int deflated_size(const char* escaped_str)
+static size_t deflated_size(const char* escaped_str)
 {
-    int size = strlen(escaped_str) + 2;
+    size_t size = strlen(escaped_str) + 2;
 
     while (*escaped_str)
     {
@@ -21,9 +20,10 @@ static int deflated_size(const char* escaped_str)
     return size;
 }
 
-static int escaped_size(const char* str)
+static size_t escaped_size(const char* string)
 {
-    int size = -strlen(str);
+    const char* str = string;
+    size_t size = 0;
 
     char c;
     while ((c = *(str++)))
@@ -32,14 +32,14 @@ static int escaped_size(const char* str)
         size++;
     }
 
-    return size + 2;
+    return size + 2 - strlen(string);
 }
 
-SolverResult solve(const char* _input, int (*measure)(const char*))
+SolverResult solve(const char* _input, size_t (*measure)(const char*))
 {
     char* input = strdup(_input);
     const char* line = strtok(input, "\n");
-    int result = 0;
+    size_t result = 0;
 
     while (line)
     {
@@ -50,8 +50,8 @@ SolverResult solve(const char* _input, int (*measure)(const char*))
     free(input);
 
     return (SolverResult) {
-        .type = RESULT_INT,
-        .integer_result = result
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = result
     };
 }
 

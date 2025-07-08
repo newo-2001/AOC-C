@@ -1,14 +1,15 @@
 #include "../solvers.h"
 #include "../../lib/math.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 typedef struct Present
 {
-    unsigned int length;
-    unsigned int width;
-    unsigned int height;
+    uint32_t length;
+    uint32_t width;
+    uint32_t height;
 } Present;
 
 static Present parse_present(const char* str)
@@ -20,27 +21,27 @@ static Present parse_present(const char* str)
 
 static unsigned int wrapping_paper(Present present)
 {
-    unsigned int front = present.height * present.width;
-    unsigned int side = present.height * present.length;
-    unsigned int top = present.width * present.length;
-    unsigned int slack = min(min(front, side), top);
+    uint32_t front = present.height * present.width;
+    uint32_t side = present.height * present.length;
+    uint32_t top = present.width * present.length;
+    uint32_t slack = min(min(front, side), top);
 
     return 2 * (front + side + top) + slack;
 }
 
-static unsigned int ribbon(Present present)
+static uint32_t ribbon(Present present)
 {
-    unsigned int bow = present.width * present.height * present.length;
-    unsigned int front = present.height + present.width;
-    unsigned int side = present.height + present.length;
-    unsigned int top = present.width + present.length;
+    uint32_t bow = present.width * present.height * present.length;
+    uint32_t front = present.height + present.width;
+    uint32_t side = present.height + present.length;
+    uint32_t top = present.width + present.length;
 
     return 2 * min(min(front, side), top) + bow;
 }
 
 SolverResult solve_2015_day_02_part_1(const char* _input)
 {
-    unsigned int total_wrapping_paper = 0;
+    uint32_t total_wrapping_paper = 0;
 
     char* input = strdup(_input);
     const char* line = strtok(input, "\n");
@@ -54,8 +55,8 @@ SolverResult solve_2015_day_02_part_1(const char* _input)
     free(input);
 
     return (SolverResult) {
-        .type = RESULT_INT,
-        .integer_result = (int) total_wrapping_paper
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = total_wrapping_paper
     };
 }
 
@@ -75,7 +76,7 @@ SolverResult solve_2015_day_02_part_2(const char* _input)
     free(input);
 
     return (SolverResult) {
-        .type = RESULT_INT,
-        .integer_result = (int) total_ribbon
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = total_ribbon
     };
 }

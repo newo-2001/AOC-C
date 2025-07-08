@@ -2,6 +2,8 @@
 #include "../../lib/geometry.h"
 #include "../../lib/collections/hashset.h"
 
+#include <assert.h>
+
 static inline Direction parse_direction(char direction)
 {
     switch (direction)
@@ -10,7 +12,9 @@ static inline Direction parse_direction(char direction)
         case '>': return DIR_EAST;
         case 'v': return DIR_SOUTH;
         case '<': return DIR_WEST;
-        default: return -1;
+        default:
+            assert(false);
+            return 0;
     }
 }
 
@@ -28,12 +32,13 @@ SolverResult solve_2015_day_03_part_1(const char* input)
         position = vec2_addv(position, dir_unit_vec(direction));
     }
 
-    SolverResult result;
-    result.type = RESULT_INT;
-    result.integer_result = (int) hashset_size(visited);
+    size_t size = hashset_size(visited);
     hashset_destroy(visited);
 
-    return result;
+    return (SolverResult) {
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = size
+    };
 }
 
 SolverResult solve_2015_day_03_part_2(const char* input)
@@ -54,11 +59,11 @@ SolverResult solve_2015_day_03_part_2(const char* input)
         robo_santa_pos = vec2_addv(robo_santa_pos, dir_unit_vec(parse_direction(c)));
     }
 
-    SolverResult result = {
-        .type = RESULT_INT,
-        .integer_result = (int) hashset_size(visited)
-    };
-
+    size_t size = hashset_size(visited);
     hashset_destroy(visited);
-    return result;
+
+    return (SolverResult) {
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = size
+    };
 }

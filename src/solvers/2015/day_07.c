@@ -3,7 +3,6 @@
 #include "../../lib/collections/hashmap.h"
 
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
 #include <assert.h>
 
@@ -39,7 +38,7 @@ static Value parse_value(const char* input) {
     if (is_digit(*input)) {
         return (Value) {
             .type = VAL_CONST,
-            .constant = atoi(input)
+            .constant = (uint16_t) atoi(input)
         };
     }
 
@@ -53,7 +52,7 @@ static void parse_expr(char* input, HashMap* map) {
     const char* delim = " ";
     const char* left = strtok(input, delim);
 
-    Expression expr;
+    Expression expr = {0};
     if (!strcmp("NOT", left)) {
         expr.type = EXPR_NOT;
         expr.left = parse_value(strtok(NULL, delim));
@@ -131,11 +130,12 @@ static HashMap build_circuit(char* input) {
 
     HashMap circuit = hashmap_new(sizeof(const char*), sizeof(Expression), options);
     
-    char* line = strtok_r(input, "\n", &input);
+    char* context;
+    char* line = strtok_r(input, "\n", &context);
     while (line)
     {
         parse_expr(line, &circuit);
-        line = strtok_r(NULL, "\n", &input);
+        line = strtok_r(NULL, "\n", &context);
     }
 
     return circuit;
@@ -170,8 +170,8 @@ SolverResult solve_2015_day_07_part_1(const char* _input)
     free(input);
 
     return (SolverResult) {
-        .type = RESULT_INT,
-        .integer_result = result
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = result
     };
 }
 
@@ -196,7 +196,7 @@ SolverResult solve_2015_day_07_part_2(const char* _input)
     free(input);
 
     return (SolverResult) {
-        .type = RESULT_INT,
-        .integer_result = result
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = result
     };
 }

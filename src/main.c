@@ -1,14 +1,15 @@
 #define SKIP_SLOW_SOLVERS
 
+#include "lib/strutils.h"
+#include "solvers/solvers.h"
+#include "timer.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <stdint.h>
-
-#include "lib/strutils.h"
-#include "solvers/solvers.h"
-#include "timer.h"
+#include <inttypes.h>
 
 char* read_file(const char* path);
 
@@ -92,29 +93,33 @@ int main()
         while (is_whitespace(*solution)) solution++;
 
         char* result_str = NULL;
+        size_t length;
         switch (result.type)
         {
-            case RESULT_INT:
-            {
-                size_t length = result.integer_result / 10 + 3;
+            case RESULT_UNSIGNED_INT:
+                length = result.value.unsigned_int / 10 + 3;
                 result_str = malloc(sizeof(char) * length);
-                snprintf(result_str, length, "%d", result.integer_result);
+                snprintf(result_str, length, "%"PRIu64, result.value.unsigned_int);
                 break;
-            }
-            case RESULT_STRING:
+            case RESULT_SIGNED_INT:
+                length = result.value.signed_int / 10 + 3;
+                result_str = malloc(sizeof(char) * length);
+                snprintf(result_str, length, "%"PRIi64, result.value.signed_int);
+                break;
+            case RESULT_DYNAMIC_STRING:
             case RESULT_STATIC_STRING:
-                result_str = (char *) result.string_result;
+                result_str = result.value.string;
                 break;
-            case RESULT_ERR:
+            case RESULT_DYNAMIC_ERR:
             case RESULT_STATIC_ERR:
             {
-                size_t length = strlen(result.string_result) + sizeof("Error(\"\")");
-                result_str = malloc(length),
-                    snprintf(result_str, length, "Error(\"%s\")", result.string_result);
+                size_t str_len = strlen(result.value.string) + sizeof("Error(\"\")");
+                result_str = malloc(str_len);
+                snprintf(result_str, str_len, "Error(\"%s\")", result.value.string);
 
-                if (result.type == RESULT_ERR)
+                if (result.type == RESULT_DYNAMIC_ERR)
                 {
-                    free(result.string_result);
+                    free(result.value.string);
                 }
 
                 break;
@@ -131,7 +136,11 @@ int main()
         }
 
         free(solutions);
-        free(result_str);
+
+        if (result.type != RESULT_STATIC_STRING)
+        {
+            free(result_str);
+        }
     }
 
     if (input) free(input);

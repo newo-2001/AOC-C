@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <assert.h>
 
 typedef enum InstructionType
@@ -100,9 +99,6 @@ static int sum_lights(uint32_t* grid) {
 
 static SolverResult solve(const char* _input, Instruction (*instruction_set)(Instruction))
 {
-    SolverResult result;
-    result.type = RESULT_INT;
-
     uint32_t* grid = calloc(GRID_SIZE, sizeof(uint32_t));
 
     char* input = strdup(_input);
@@ -115,11 +111,15 @@ static SolverResult solve(const char* _input, Instruction (*instruction_set)(Ins
         line = strtok(NULL, "\n");
     }
 
-    result.integer_result = sum_lights(grid);
+    uint32_t lights = sum_lights(grid);
 
     free(grid);
     free(input);
-    return result;
+
+    return (SolverResult) {
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = lights
+    };
 }
 
 static Instruction digital(Instruction instruction) { return instruction; }

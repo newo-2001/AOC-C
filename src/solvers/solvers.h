@@ -1,22 +1,26 @@
 #ifndef AOC_SOLVERS_H
 #define AOC_SOLVERS_H
 
+#include <stdint.h>
+
 typedef enum SolverResultType
 {
-    RESULT_ERR,
+    RESULT_DYNAMIC_ERR,
     RESULT_STATIC_ERR,
-    RESULT_INT,
-    RESULT_STRING,
-    RESULT_STATIC_STRING
+    RESULT_DYNAMIC_STRING,
+    RESULT_STATIC_STRING,
+    RESULT_UNSIGNED_INT,
+    RESULT_SIGNED_INT
 } SolverResultType;
 
 typedef struct SolverResult
 {
     SolverResultType type;
     union {
-        char* string_result;
-        int integer_result;
-    };
+        char* string;
+        int64_t signed_int;
+        uint64_t unsigned_int;
+    } value;
 } SolverResult;
 
 typedef SolverResult (*Solver)(const char* input);

@@ -2,7 +2,7 @@
 
 SolverResult solve_2015_day_01_part_1(const char* input) {
     SolverResult result;
-    int floor = 0;
+    int32_t floor = 0;
 
     char c;
     while ((c = *(input++)))
@@ -11,15 +11,14 @@ SolverResult solve_2015_day_01_part_1(const char* input) {
         else if (c == ')') floor--;
     }
 
-    result.type = RESULT_INT;
-    result.integer_result = floor;
+    result.type = RESULT_SIGNED_INT,
+    result.value.signed_int = floor;
     return result;
 }
 
 SolverResult solve_2015_day_01_part_2(const char* input) {
-    SolverResult result;
     const char* input_start = input;
-    int floor = 0;
+    int32_t floor = 0;
 
     char c;
     while((c = *(input++)))
@@ -29,13 +28,15 @@ SolverResult solve_2015_day_01_part_2(const char* input) {
 
         if (floor < 0)
         {
-            result.type = RESULT_INT;
-            result.integer_result = (int) (input - input_start);
-            return result;
+            return (SolverResult) {
+                .type = RESULT_UNSIGNED_INT,
+                .value.unsigned_int = input - input_start
+            };
         }
     }
 
-    result.type = RESULT_STATIC_ERR;
-    result.string_result = "Santa did not enter the basement";
-    return result;
+    return (SolverResult) {
+        .type = RESULT_STATIC_ERR,
+        .value.string = "Santa did not enter the basement"
+    };
 }

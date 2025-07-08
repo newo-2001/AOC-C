@@ -2,10 +2,14 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(aoc C)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 
 if (WIN32)
-    add_compile_definitions(WIN32)
+    add_compile_definitions(
+        WIN32
+        _CRT_SECURE_NO_WARNINGS
+        strtok_r=strtok_s
+    )
 elseif (UNIX)
     add_compile_definitions(UNIX)
 endif ()

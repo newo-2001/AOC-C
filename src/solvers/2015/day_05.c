@@ -1,6 +1,7 @@
 #include "../solvers.h"
 #include "../../constants.h"
 #include "../../lib/collections/hashset.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -45,8 +46,8 @@ SolverResult solve_2015_day_05_part_1(const char* _input)
     free(input);
 
     return (SolverResult) {
-        .type = RESULT_INT,
-        .integer_result = (int) nice_strings
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = nice_strings
     };
 }
 
@@ -117,7 +118,7 @@ SolverResult solve_2015_day_05_part_2(const char* _input)
     free(input);
 
     return (SolverResult) {
-        .type = RESULT_INT,
-        .integer_result = (int) nice_strings
+        .type = RESULT_UNSIGNED_INT,
+        .value.unsigned_int = nice_strings
     };
 }
