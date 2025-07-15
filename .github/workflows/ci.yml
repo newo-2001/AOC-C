@@ -1,0 +1,44 @@
+name: ci
+on: push
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+            platform: windows
+            compiler: cl
+            compiler-flags: /W4 /WX
+            build-artifact: aoc.exe
+
+          - os: ubuntu-latest
+            platform: linux
+            compiler: gcc
+            compiler-flags: -Wall -Wextra -Werror
+            build-artifact: aoc
+      
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      - name: Build with CMake
+        uses: threeal/cmake-action@v2.1.0
+        with:
+          source-dir: .
+          build-dir: build
+          generator: Ninja
+          c-compiler: ${{ matrix.compiler }}
+          c-flags: ${{ matrix.compiler-flags }}
+      
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aoc-${{ matrix.platform }}
+          path: build/${{ matrix.build-artifact }}

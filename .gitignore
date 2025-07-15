@@ -1,6 +1,8 @@
 build
-inputs
-solutions
+inputs/**
+solutions/**
 .idea
 .vscode
 .vs
+
+!**/.gitkeep
