@@ -9,12 +9,12 @@ jobs:
         include:
           - os: windows-latest
             platform: windows
-            configurePreset: Windows
+            configurePreset: Windows-Release
             build-artifact: aoc.exe
 
           - os: ubuntu-latest
             platform: linux
-            configurePreset: Linux
+            configurePreset: Linux-Release
             build-artifact: aoc
       
     runs-on: ${{ matrix.os }}
@@ -32,7 +32,7 @@ jobs:
           VCPKG_ROOT:
         with:
           configurePreset: ${{ matrix.configurePreset }}
-          buildPreset: ${{ matrix.configurePreset }}-Release
+          buildPreset: ${{ matrix.configurePreset }}
 
       - name: Run tests
         run: ctest --test-dir build/${{ matrix.configurePreset }} --verbose
@@ -42,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aoc-${{ matrix.platform }}
-          path: build/${{ matrix.build-artifact }}
+          path: build/${{ matrix.configurePreset }}/${{ matrix.build-artifact }}

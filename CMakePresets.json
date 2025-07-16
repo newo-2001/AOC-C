@@ -5,10 +5,10 @@
             "name": "base",
             "hidden": true,
             "generator": "Ninja",
-            "binaryDir": "build/${hostSystemName}"
+            "binaryDir": "build/${presetName}"
         },
         {
-            "name": "windows",
+            "name": "windows-base",
             "hidden": true,
             "inherits": "base",
             "condition": {
@@ -17,12 +17,11 @@
                 "rhs": "Windows"
             },
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl",
-                "CMAKE_C_FLAGS": "/W4 /WX"
+                "CMAKE_C_COMPILER": "cl"
             }
         },
         {
-            "name": "linux",
+            "name": "linux-base",
             "hidden": true,
             "inherits": "base",
             "condition": {
@@ -31,45 +30,58 @@
                 "rhs": "Linux"
             },
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_C_FLAGS": "-Wall -Wextra -Werror"
+                "CMAKE_C_COMPILER": "gcc"
             }
         },
         {
-            "name": "Windows",
-            "displayName": "Windows",
-            "inherits": "windows"
+            "name": "Windows-Debug",
+            "displayName": "Windows (Debug)",
+            "inherits": "windows-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
         },
         {
-            "name": "Linux",
-            "displayName": "Linux",
-            "inherits": "linux"
+            "name": "Windows-Release",
+            "displayName": "Windows (Release)",
+            "inherits": "windows-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "Linux-Debug",
+            "displayName": "Linux (Debug)",
+            "inherits": "linux-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "Linux-Release",
+            "displayName": "Linux (Release)",
+            "inherits": "linux-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
         }
     ],
     "buildPresets": [
         {
             "name": "Windows-Debug",
-            "displayName": "Windows (Debug)",
-            "configurePreset": "Windows",
-            "configuration": "Debug"
+            "configurePreset": "Windows-Debug"
         },
         {
             "name": "Windows-Release",
-            "displayName": "Windows (Release)",
-            "configurePreset": "Windows",
-            "configuration": "RelWithDebInfo"
+            "configurePreset": "Windows-Release"
         },
         {
             "name": "Linux-Debug",
-            "displayName": "Linux (Debug)",
-            "configurePreset": "Linux",
-            "configuration": "Debug"
+            "configurePreset": "Linux-Debug"
         },
         {
             "name": "Linux-Release",
-            "displayName": "Linux (Release)",
-            "configurePreset": "Linux",
-            "configuration": "RelWithDebInfo"
+            "configurePreset": "Linux-Release"
         }
     ]
 }

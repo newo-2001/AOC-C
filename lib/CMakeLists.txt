@@ -25,10 +25,16 @@ foreach(HEADER ${LIB_HEADERS})
 endforeach()
 
 add_library(aoc_lib STATIC
-    ${LIB_HEADERS}
-    ${LIB_SOURCE}
+   ${LIB_SOURCE}
 )
 
 target_include_directories(aoc_lib PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/include
 )
+
+target_compile_options(aoc_lib PRIVATE
+    $<$<C_COMPILER_ID:MSVC>:/W4 /WX>
+    $<$<NOT:$<C_COMPILER_ID:MSVC>>:-Wall -Wextra -Werror>
+)
+
+target_compile_definitions(aoc_lib PRIVATE common_defines)
