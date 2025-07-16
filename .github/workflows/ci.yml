@@ -9,14 +9,12 @@ jobs:
         include:
           - os: windows-latest
             platform: windows
-            compiler: cl
-            compiler-flags: /W4 /WX
+            configurePreset: Windows
             build-artifact: aoc.exe
 
           - os: ubuntu-latest
             platform: linux
-            compiler: gcc
-            compiler-flags: -Wall -Wextra -Werror
+            configurePreset: Linux
             build-artifact: aoc
       
     runs-on: ${{ matrix.os }}
@@ -27,15 +25,18 @@ jobs:
       - name: Setup MSVC
         if: matrix.os == 'windows-latest'
         uses: ilammy/msvc-dev-cmd@v1
-      
+
       - name: Build with CMake
-        uses: threeal/cmake-action@v2.1.0
+        uses: lukka/run-cmake@v10
+        env:
+          VCPKG_ROOT:
         with:
-          source-dir: .
-          build-dir: build
-          generator: Ninja
-          c-compiler: ${{ matrix.compiler }}
-          c-flags: ${{ matrix.compiler-flags }}
+          configurePreset: ${{ matrix.configurePreset }}
+          buildPreset: ${{ matrix.configurePreset }}-Release
+
+      - name: Run tests
+        run: ctest --test-dir build/${{ matrix.configurePreset }} --verbose
+        shell: bash
       
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

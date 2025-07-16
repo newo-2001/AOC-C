@@ -1,7 +1,7 @@
 #ifndef AOC_STRUTILS_H
 #define AOC_STRUTILS_H
 
-#include "../constants.h"
+#include "constants.h"
 
 bool is_whitespace(char c);
 

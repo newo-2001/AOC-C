@@ -1,10 +1,11 @@
 #include "../solvers.h"
-#include "../../lib/strutils.h"
-#include "../../lib/collections/hashmap.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
+#include <aoc_lib/strutils.h>
+#include <aoc_lib/collections/hashmap.h>
 
 typedef enum ExpressionType {
     EXPR_LITERAL,

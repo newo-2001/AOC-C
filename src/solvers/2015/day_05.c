@@ -1,9 +1,10 @@
 #include "../solvers.h"
-#include "../../constants.h"
-#include "../../lib/collections/hashset.h"
 
 #include <string.h>
 #include <stdlib.h>
+
+#include <aoc_lib/constants.h>
+#include <aoc_lib/collections/hashset.h>
 
 static inline bool is_vowel(char c)
 {

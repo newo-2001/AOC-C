@@ -1,11 +1,11 @@
-﻿{
+{
     "version": 6,
     "configurePresets": [
         {
             "name": "base",
             "hidden": true,
             "generator": "Ninja",
-            "binaryDir": "build/${presetName}"
+            "binaryDir": "build/${hostSystemName}"
         },
         {
             "name": "windows",
@@ -24,6 +24,7 @@
         {
             "name": "linux",
             "hidden": true,
+            "inherits": "base",
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
@@ -35,40 +36,40 @@
             }
         },
         {
-            "name": "debug",
-            "hidden": true,
-            "inherits": "base",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
+            "name": "Windows",
+            "displayName": "Windows",
+            "inherits": "windows"
         },
         {
-            "name": "release",
-            "hidden": true,
-            "inherits": "base",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo" 
-            }
-        },
+            "name": "Linux",
+            "displayName": "Linux",
+            "inherits": "linux"
+        }
+    ],
+    "buildPresets": [
         {
             "name": "Windows-Debug",
             "displayName": "Windows (Debug)",
-            "inherits": ["windows", "debug"]
+            "configurePreset": "Windows",
+            "configuration": "Debug"
         },
         {
             "name": "Windows-Release",
             "displayName": "Windows (Release)",
-            "inherits": ["windows", "release"]
+            "configurePreset": "Windows",
+            "configuration": "RelWithDebInfo"
         },
         {
             "name": "Linux-Debug",
             "displayName": "Linux (Debug)",
-            "inherits": ["linux", "debug"]
+            "configurePreset": "Linux",
+            "configuration": "Debug"
         },
         {
             "name": "Linux-Release",
             "displayName": "Linux (Release)",
-            "inherits": ["linux", "release"]
+            "configurePreset": "Linux",
+            "configuration": "RelWithDebInfo"
         }
     ]
 }

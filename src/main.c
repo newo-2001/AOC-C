@@ -1,15 +1,16 @@
 #define SKIP_SLOW_SOLVERS
 
-#include "lib/strutils.h"
-#include "solvers/solvers.h"
-#include "timer.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <stdint.h>
 #include <inttypes.h>
+
+#include <aoc_lib/strutils.h>
+
+#include "solvers/solvers.h"
+#include "timer.h"
 
 char* read_file(const char* path);
 

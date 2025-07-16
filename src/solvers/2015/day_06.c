@@ -1,11 +1,12 @@
 #include "../solvers.h"
-#include "../../lib/geometry.h"
-#include "../../lib/strutils.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+
+#include <aoc_lib/geometry.h>
+#include <aoc_lib/strutils.h>
 
 typedef enum InstructionType
 {

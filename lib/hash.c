@@ -1,5 +1,4 @@
 #include "hash.h"
-#include "../vendor/md5.h"
 
 int hash_djb2(const void* data, size_t size)
 {
@@ -11,14 +10,4 @@ int hash_djb2(const void* data, size_t size)
     }
 
     return hash;
-}
-
-void hash_md5(const void* data, size_t size, uint8_t* result)
-{
-    MD5Context ctx;
-    md5Init(&ctx);
-    md5Update(&ctx, (uint8_t *) data, size);
-    md5Finalize(&ctx);
-
-    memcpy(result, ctx.digest, 16);
 }

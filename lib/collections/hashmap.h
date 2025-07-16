@@ -1,8 +1,9 @@
 #ifndef AOC_HASHMAP_H
 #define AOC_HASHMAP_H
 
-#include "stddef.h"
-#include "../../constants.h"
+#include <stddef.h>
+
+#include "../constants.h"
 #include "../hash.h"
 
 typedef void HashMapDebugFormatter(const void* data, size_t size);

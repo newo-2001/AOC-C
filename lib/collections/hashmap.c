@@ -1,10 +1,11 @@
 #include "hashmap.h"
-#include "../../constants.h"
-#include "../hash.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "../constants.h"
+#include "../hash.h"
 
 static bool keys_eq(const void* a, const void* b, size_t key_size)
 {

@@ -1,8 +1,9 @@
-#include "../solvers.h"
-#include "../../lib/geometry.h"
-#include "../../lib/collections/hashset.h"
-
 #include <assert.h>
+
+#include <aoc_lib/geometry.h>
+#include <aoc_lib/collections/hashset.h>
+
+#include "../solvers.h"
 
 static inline Direction parse_direction(char direction)
 {

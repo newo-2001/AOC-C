@@ -4,6 +4,9 @@ project(aoc C)
 
 set(CMAKE_C_STANDARD 11)
 
+include(CTest)
+enable_testing()
+
 if (WIN32)
     add_compile_definitions(
         WIN32
@@ -17,26 +20,13 @@ endif ()
 file(COPY inputs DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY solutions DESTINATION ${CMAKE_BINARY_DIR})
 
+add_subdirectory(lib)
+add_subdirectory(vendor/md5)
+
 add_executable(aoc
     src/main.c
-    src/constants.h
     src/timer.h
     src/timer.c
-
-    src/lib/strutils.h
-    src/lib/strutils.c
-    src/lib/geometry.h
-    src/lib/geometry.c
-    src/lib/hash.h
-    src/lib/hash.c
-    src/lib/math.h
-
-    src/lib/collections/hashmap.h
-    src/lib/collections/hashmap.c
-    src/lib/collections/hashset.h
-
-    src/vendor/md5.c
-    src/vendor/md5.h
 
     src/solvers/solvers.h
     src/solvers/2015/day_01.c
@@ -48,3 +38,11 @@ add_executable(aoc
     src/solvers/2015/day_07.c
     src/solvers/2015/day_08.c
 )
+
+target_link_libraries(aoc
+    aoc_lib
+    md5
+)
+
+add_subdirectory(vendor/unity)
+add_subdirectory(test)

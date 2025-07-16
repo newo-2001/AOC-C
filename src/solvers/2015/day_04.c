@@ -1,10 +1,12 @@
 #include "../solvers.h"
-#include "../../lib/hash.h"
-#include "../../constants.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#include <md5/md5.h>
+
+#include <aoc_lib/constants.h>
 
 static bool has_leading_zeros(const uint8_t* data, size_t zeros)
 {
