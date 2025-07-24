@@ -20,3 +20,4 @@ endfunction()
 
 new_test_binary(hashmap collections/hashmaptests.c)
 new_test_binary(geometry geometrytests.c)
+new_test_binary(slice slicetests.c)

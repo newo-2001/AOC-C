@@ -1,9 +1,9 @@
 set(LIB_HEADERS
-    constants.h
     strutils.h
     geometry.h
     hash.h
     math.h
+    slice.h
 
     collections/hashset.h
     collections/hashmap.h
@@ -13,6 +13,7 @@ set(LIB_SOURCE
     strutils.c
     geometry.c
     hash.c
+    slice.c
 
     collections/hashmap.c
 )

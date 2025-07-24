@@ -2,8 +2,8 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#include <aoc_lib/constants.h>
 #include <aoc_lib/collections/hashset.h>
 
 static inline bool is_vowel(char c)
@@ -11,12 +11,13 @@ static inline bool is_vowel(char c)
     return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
 }
 
-static inline bool is_nice(const char* str)
+static inline bool is_nice(const char *str)
 {
-    const char* naughty_strings[] = { "ab", "cd", "pq", "xy" };
-    for (size_t i = 0; i < sizeof(naughty_strings) / sizeof(const char*); i++)
+    const char *naughty_strings[] = {"ab", "cd", "pq", "xy"};
+    for (size_t i = 0; i < sizeof(naughty_strings) / sizeof(const char *); i++)
     {
-        if (strstr(str, naughty_strings[i])) return false;
+        if (strstr(str, naughty_strings[i]))
+            return false;
     }
 
     size_t vowels = 0, duplicates = 0;
@@ -31,29 +32,28 @@ static inline bool is_nice(const char* str)
     return vowels >= 3 && duplicates > 0;
 }
 
-SolverResult solve_2015_day_05_part_1(const char* _input)
+SolverResult solve_2015_day_05_part_1(const char *_input)
 {
     size_t nice_strings = 0;
 
-    char* input = strdup(_input);
-    char* line = strtok(input, "\n");
+    char *input = strdup(_input);
+    char *line = strtok(input, "\n");
 
     while (line)
     {
-        nice_strings += (int) is_nice(line);
+        nice_strings += (int)is_nice(line);
         line = strtok(NULL, "\n");
     }
 
     free(input);
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = nice_strings
-    };
+        .value.unsigned_int = nice_strings};
 }
 
 // Don't ask me how this thing works..
-static bool is_nice_v2(const char* str)
+static bool is_nice_v2(const char *str)
 {
     HashSet seen_pairs = hashset_new(sizeof(char[2]), hashmap_default_options());
     size_t length = strlen(str);
@@ -103,12 +103,12 @@ static bool is_nice_v2(const char* str)
     return false;
 }
 
-SolverResult solve_2015_day_05_part_2(const char* _input)
+SolverResult solve_2015_day_05_part_2(const char *_input)
 {
     size_t nice_strings = 0;
 
-    char* input = strdup(_input);
-    const char* line = strtok(input, "\n");
+    char *input = strdup(_input);
+    const char *line = strtok(input, "\n");
 
     while (line)
     {
@@ -118,8 +118,7 @@ SolverResult solve_2015_day_05_part_2(const char* _input)
 
     free(input);
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = nice_strings
-    };
+        .value.unsigned_int = nice_strings};
 }

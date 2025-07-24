@@ -1,20 +1,22 @@
-#include <string.h>
 #include "strutils.h"
 
-bool is_whitespace(char c) {
+#include <string.h>
+
+bool is_whitespace(char c)
+{
     switch (c)
     {
-        case ' ':
-        case '\t':
-        case '\r':
-        case '\n':
-            return true;
-        default:
-            return false;
+    case ' ':
+    case '\t':
+    case '\r':
+    case '\n':
+        return true;
+    default:
+        return false;
     }
 }
 
-const char* skip_str(const char* source, const char* str)
+const char *skip_str(const char *source, const char *str)
 {
     if (strstr(source, str) == source)
     {
