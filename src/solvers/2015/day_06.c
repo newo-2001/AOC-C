@@ -1,7 +1,6 @@
 #include "../solvers.h"
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -30,25 +29,25 @@ typedef struct Instruction
     Area area;
 } Instruction;
 
-static Instruction parse_instruction(const char* str)
+static bool parse_pos(str_t str, Vec2* out_result)
 {
-    Instruction result;
+    StrSpliterator comma = str_split(str, SLICE(","));
 
-    const char* remaining;
-    if ((remaining = skip_str(str, "toggle"))) result.type = INST_TOGGLE;
-    else if ((remaining = skip_str(str, "turn on"))) result.type = INST_ENABLE;
-    else if ((remaining = skip_str(str, "turn off"))) result.type = INST_DISABLE;
+    return str_split_next(&comma, &str) && str_parse_int(str, &out_result->x) && str_split_next(&comma, &str) &&
+           str_parse_int(str, &out_result->y);
+}
 
-    sscanf(
-        remaining + 1,
-        "%i,%i through %i,%i",
-        &result.area.top_left.x,
-        &result.area.top_left.y,
-        &result.area.bottom_right.x,
-        &result.area.bottom_right.y
-    );
+static bool parse_instruction(str_t str, Instruction* out_result)
+{
+    if (str_contains(str, SLICE("toggle"))) out_result->type = INST_TOGGLE;
+    else if (str_contains(str, SLICE("turn on"))) out_result->type = INST_ENABLE;
+    else if (str_contains(str, SLICE("turn off"))) out_result->type = INST_DISABLE;
 
-    return result;
+    size_t sep_pos;
+    str_t sep = SLICE(" through ");
+
+    return str_find(str, sep, &sep_pos) && parse_pos(str_sub(str, 0, sep_pos), &out_result->area.top_left) &&
+           parse_pos(str_sub(str, sep_pos + sep.length, str.length), &out_result->area.bottom_right);
 }
 
 #define GRID_WIDTH 1000
@@ -88,7 +87,8 @@ static void execute_instruction(Instruction instruction, uint32_t* grid)
     }
 }
 
-static int sum_lights(uint32_t* grid) {
+static int sum_lights(uint32_t* grid)
+{
     int count = 0;
     for (size_t i = 0; i < GRID_SIZE; i++)
     {
@@ -98,28 +98,32 @@ static int sum_lights(uint32_t* grid) {
     return count;
 }
 
-static SolverResult solve(const char* _input, Instruction (*instruction_set)(Instruction))
+static SolverResult solve(str_t input, Instruction (*instruction_set)(Instruction))
 {
     uint32_t* grid = calloc(GRID_SIZE, sizeof(uint32_t));
 
-    char* input = strdup(_input);
-    const char* line = strtok(input, "\n");
-
-    while (line)
+    str_t line;
+    StrSpliterator it = str_lines(input);
+    while (str_split_next(&it, &line))
     {
-        Instruction instruction = instruction_set(parse_instruction(line));
-        execute_instruction(instruction, grid);
-        line = strtok(NULL, "\n");
+        Instruction inst;
+        if (!parse_instruction(line, &inst))
+        {
+            return (SolverResult){
+                .type = RESULT_STATIC_ERR,
+                .value.string = "Failed to parse instruction",
+            };
+        }
+        execute_instruction(instruction_set(inst), grid);
     }
 
     uint32_t lights = sum_lights(grid);
 
     free(grid);
-    free(input);
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = lights
+        .value.unsigned_int = lights,
     };
 }
 
@@ -145,5 +149,5 @@ static Instruction analog(Instruction instruction)
     return instruction;
 }
 
-SolverResult solve_2015_day_06_part_1(const char* input) { return solve(input, digital); }
-SolverResult solve_2015_day_06_part_2(const char* input) { return solve(input, analog); }
+SolverResult solve_2015_day_06_part_1(str_t input) { return solve(input, digital); }
+SolverResult solve_2015_day_06_part_2(str_t input) { return solve(input, analog); }

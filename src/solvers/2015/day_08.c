@@ -1,59 +1,51 @@
 #include "../solvers.h"
 
-#include <stdlib.h>
-#include <string.h>
-
-static size_t deflated_size(const char* escaped_str)
+static size_t deflated_size(str_t escaped_str)
 {
-    size_t size = strlen(escaped_str) + 2;
+    size_t size = escaped_str.length + 2;
 
-    while (*escaped_str)
+    for (const char* c = str_begin(escaped_str); c != str_end(escaped_str); c = str_next(c))
     {
-        if (*(escaped_str++) == '\\' && *(escaped_str++) == 'x')
+        if (*(c++) == '\\' && *(c++) == 'x')
         {
-            escaped_str += 2;
+            c += 2;
         }
-        
+
         size--;
     }
 
     return size;
 }
 
-static size_t escaped_size(const char* string)
+static size_t escaped_size(str_t str)
 {
-    const char* str = string;
     size_t size = 0;
 
-    char c;
-    while ((c = *(str++)))
+    for (const char* c = str_begin(str); c != str_end(str); c = str_next(c))
     {
-        if (c == '\\' || c == '"') size++;
+        if (*c == '\\' || *c == '"') size++;
         size++;
     }
 
-    return size + 2 - strlen(string);
+    return size + 2 - str.length;
 }
 
-SolverResult solve(const char* _input, size_t (*measure)(const char*))
+static SolverResult solve(str_t input, size_t (*measure)(str_t line))
 {
-    char* input = strdup(_input);
-    const char* line = strtok(input, "\n");
     size_t result = 0;
 
-    while (line)
+    str_t line;
+    StrSpliterator it = str_lines(input);
+    while (str_split_next(&it, &line))
     {
         result += measure(line);
-        line = strtok(NULL, "\n");
     }
 
-    free(input);
-
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = result
+        .value.unsigned_int = result,
     };
 }
 
-SolverResult solve_2015_day_08_part_1(const char* input) { return solve(input, deflated_size); }
-SolverResult solve_2015_day_08_part_2(const char* input) { return solve(input, escaped_size); }
+SolverResult solve_2015_day_08_part_1(str_t input) { return solve(input, deflated_size); }
+SolverResult solve_2015_day_08_part_2(str_t input) { return solve(input, escaped_size); }

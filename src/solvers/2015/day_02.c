@@ -1,4 +1,3 @@
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,11 +12,18 @@ typedef struct Present
     uint32_t height;
 } Present;
 
-static Present parse_present(const char* str)
+static bool parse_present(str_t line, Present* out_present)
 {
-    Present present;
-    sscanf(str, "%ux%ux%u", &present.length, &present.width, &present.height);
-    return present;
+    str_t num;
+    int* side = (int*)&out_present->length;
+    StrSpliterator it = str_split(line, SLICE("x"));
+
+    while (str_split_next(&it, &num))
+    {
+        if (!str_parse_int(num, side++)) return false;
+    }
+
+    return true;
 }
 
 static unsigned int wrapping_paper(Present present)
@@ -40,44 +46,31 @@ static uint32_t ribbon(Present present)
     return 2 * min(min(front, side), top) + bow;
 }
 
-SolverResult solve_2015_day_02_part_1(const char* _input)
+static SolverResult solve(str_t input, uint32_t (*measure)(Present))
 {
     uint32_t total_wrapping_paper = 0;
 
-    char* input = strdup(_input);
-    const char* line = strtok(input, "\n");
-
-    while (line)
+    str_t line;
+    StrSpliterator it = str_lines(input);
+    while (str_split_next(&it, &line))
     {
-        total_wrapping_paper += wrapping_paper(parse_present(line));
-        line = strtok(NULL, "\n");
+        Present present;
+        if (!parse_present(line, &present))
+        {
+            return (SolverResult){
+                .type = RESULT_STATIC_ERR,
+                .value.string = "Failed to parse present",
+            };
+        }
+
+        total_wrapping_paper += measure(present);
     }
 
-    free(input);
-
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = total_wrapping_paper
+        .value.unsigned_int = total_wrapping_paper,
     };
 }
 
-SolverResult solve_2015_day_02_part_2(const char* _input)
-{
-    unsigned int total_ribbon = 0;
-
-    char* input = strdup(_input);
-    char* line = strtok(input, "\n");
-
-    while (line)
-    {
-        total_ribbon += ribbon(parse_present(line));
-        line = strtok(NULL, "\n");
-    }
-
-    free(input);
-
-    return (SolverResult) {
-        .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = total_ribbon
-    };
-}
+SolverResult solve_2015_day_02_part_1(str_t input) { return solve(input, wrapping_paper); }
+SolverResult solve_2015_day_02_part_2(str_t input) { return solve(input, ribbon); }

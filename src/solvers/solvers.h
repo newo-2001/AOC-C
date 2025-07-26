@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <aoc_lib/slice.h>
+
 typedef enum SolverResultType
 {
     RESULT_DYNAMIC_ERR,
@@ -16,14 +18,15 @@ typedef enum SolverResultType
 typedef struct SolverResult
 {
     SolverResultType type;
-    union {
+    union
+    {
         char* string;
         int64_t signed_int;
         uint64_t unsigned_int;
     } value;
 } SolverResult;
 
-typedef SolverResult (*Solver)(const char* input);
+typedef SolverResult (*Solver)(str_t input);
 
 #ifdef SKIP_SLOW_SOLVERS
 #define SLOW_SOLVER(solver) NULL
@@ -31,11 +34,10 @@ typedef SolverResult (*Solver)(const char* input);
 #define SLOW_SOLVER(solver) solver
 #endif
 
-#define SOLVERS_PART(year, day, part) \
-    SolverResult solve_ ## year ## _day_ ## day ## _part_ ## part (const char* input);
+#define SOLVERS_PART(year, day, part) SolverResult solve_##year##_day_##day##_part_##part(str_t input);
 
-#define SOLVERS_DAY(year, day) \
-    SOLVERS_PART(year, day, 1) \
+#define SOLVERS_DAY(year, day)                                                                                         \
+    SOLVERS_PART(year, day, 1)                                                                                         \
     SOLVERS_PART(year, day, 2)
 
 SOLVERS_DAY(2015, 01)

@@ -1,13 +1,13 @@
 #include "../solvers.h"
 
 #include <stdlib.h>
-#include <string.h>
 #include <assert.h>
 
 #include <aoc_lib/strutils.h>
 #include <aoc_lib/collections/hashmap.h>
 
-typedef enum ExpressionType {
+typedef enum ExpressionType
+{
     EXPR_LITERAL,
     EXPR_NOT,
     EXPR_AND,
@@ -16,70 +16,88 @@ typedef enum ExpressionType {
     EXPR_RSHIFT
 } ExpressionType;
 
-typedef enum ValueType {
+typedef enum ValueType
+{
     VAL_CONST,
     VAL_VAR
 } ValueType;
 
-typedef struct Value {
+typedef struct Value
+{
     ValueType type;
-    union {
+    union
+    {
         uint16_t constant;
-        const char* variable;
+        str_t variable;
     };
 } Value;
 
-typedef struct Expression {
+typedef struct Expression
+{
     ExpressionType type;
     Value left;
     Value right;
 } Expression;
 
-static Value parse_value(const char* input) {
-    if (is_digit(*input)) {
-        return (Value) {
-            .type = VAL_CONST,
-            .constant = (uint16_t) atoi(input)
-        };
+static Value parse_value(str_t str)
+{
+    Value value;
+
+    if (str_parse_int(str, (int*)&value.constant))
+    {
+        value.type = VAL_CONST;
+    }
+    else
+    {
+        value.type = VAL_VAR;
+        value.variable = str;
     }
 
-    return (Value) {
-        .type = VAL_VAR,
-        .variable = input
-    };
+    return value;
 }
 
-static void parse_expr(char* input, HashMap* map) {
-    const char* delim = " ";
-    const char* left = strtok(input, delim);
+static void parse_expr(str_t str, HashMap* map)
+{
+    StrSpliterator it = str_split(str, SLICE(" "));
+
+    str_t token;
+    str_split_next(&it, &token);
 
     Expression expr = {0};
-    if (!strcmp("NOT", left)) {
+    if (!str_cmp(SLICE("NOT"), token))
+    {
         expr.type = EXPR_NOT;
-        expr.left = parse_value(strtok(NULL, delim));
-    } else {
-        expr.left = parse_value(left);
-        const char* operator = strtok(NULL, delim);
 
-        if (!strcmp("AND", operator)) expr.type = EXPR_AND;
-        else if (!strcmp("OR", operator)) expr.type = EXPR_OR;
-        else if (!strcmp("LSHIFT", operator)) expr.type = EXPR_LSHIFT;
-        else if (!strcmp("RSHIFT", operator)) expr.type = EXPR_RSHIFT;
-        else if (!strcmp("->", operator)) expr.type = EXPR_LITERAL;
+        str_split_next(&it, &token);
+        expr.left = parse_value(token);
+    }
+    else
+    {
+        expr.left = parse_value(token);
+
+        str_split_next(&it, &token);
+
+        if (!str_cmp(SLICE("AND"), token)) expr.type = EXPR_AND;
+        else if (!str_cmp(SLICE("OR"), token)) expr.type = EXPR_OR;
+        else if (!str_cmp(SLICE("LSHIFT"), token)) expr.type = EXPR_LSHIFT;
+        else if (!str_cmp(SLICE("RSHIFT"), token)) expr.type = EXPR_RSHIFT;
+        else if (!str_cmp(SLICE("->"), token)) expr.type = EXPR_LITERAL;
 
         if (expr.type != EXPR_LITERAL)
         {
-            expr.right = parse_value(strtok(NULL, delim));
+            str_split_next(&it, &token);
+            expr.right = parse_value(token);
         }
     }
 
     if (expr.type != EXPR_LITERAL)
     {
-        (void) strtok(NULL, delim); // void " -> "
+        // void " -> "
+        str_split_next(&it, &token);
     }
 
-    const char* var = strtok(NULL, delim);
-    hashmap_insert(map, &var, &expr);
+    str_split_next(&it, &token);
+    hashmap_insert(map, &token, &expr);
 }
 
 static uint16_t value_eval(HashMap circuit, HashMap cache, Value value);
@@ -103,7 +121,7 @@ static uint16_t expr_eval(HashMap circuit, HashMap cache, Expression expr)
         default:
             assert(false);
     };
-    
+
     assert(false);
     return 0;
 }
@@ -124,33 +142,34 @@ static uint16_t value_eval(HashMap circuit, HashMap cache, Value value)
     return result;
 }
 
-static HashMap build_circuit(char* input) {
+static HashMap build_circuit(str_t input)
+{
     HashMapOptions options = hashmap_default_options();
     options.key_comparer = hashmap_str_eq;
     options.hash_function = hashmap_str_hash;
 
     HashMap circuit = hashmap_new(sizeof(const char*), sizeof(Expression), options);
-    
-    char* context;
-    char* line = strtok_r(input, "\n", &context);
-    while (line)
+
+    str_t line;
+    StrSpliterator it = str_lines(input);
+    while (str_split_next(&it, &line))
     {
         parse_expr(line, &circuit);
-        line = strtok_r(NULL, "\n", &context);
     }
 
     return circuit;
 }
 
-static uint16_t solve_circuit(HashMap circuit, const char* variable) {
+static uint16_t solve_circuit(HashMap circuit, str_t variable)
+{
     HashMapOptions options = hashmap_default_options();
     options.hash_function = hashmap_str_hash;
     options.key_comparer = hashmap_str_eq;
 
     HashMap cache = hashmap_new(sizeof(const char*), sizeof(uint16_t), options);
-    Value value = (Value) {
+    Value value = (Value){
         .type = VAL_VAR,
-        .variable = variable
+        .variable = variable,
     };
 
     uint16_t result = value_eval(circuit, cache, value);
@@ -160,44 +179,38 @@ static uint16_t solve_circuit(HashMap circuit, const char* variable) {
     return result;
 }
 
-SolverResult solve_2015_day_07_part_1(const char* _input)
+SolverResult solve_2015_day_07_part_1(str_t input)
 {
-    char* input = strdup(_input);
     HashMap circuit = build_circuit(input);
-
-    uint16_t result = solve_circuit(circuit, "a");
+    uint16_t result = solve_circuit(circuit, SLICE("a"));
 
     hashmap_destroy(circuit);
-    free(input);
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = result
+        .value.unsigned_int = result,
     };
 }
 
-static const char* THE_LETTER_B = "b";
-
-SolverResult solve_2015_day_07_part_2(const char* _input)
+SolverResult solve_2015_day_07_part_2(str_t input)
 {
-    char* input = strdup(_input);
     HashMap circuit = build_circuit(input);
 
     Expression b;
     b.type = EXPR_LITERAL;
-    b.left = (Value) {
+    b.left = (Value){
         .type = VAL_CONST,
-        .constant = solve_circuit(circuit, "a")
+        .constant = solve_circuit(circuit, SLICE("a")),
     };
 
-    hashmap_insert(&circuit, &THE_LETTER_B, &b);
-    uint16_t result = solve_circuit(circuit, "a");
+    str_t the_letter_b = SLICE("b");
+    hashmap_insert(&circuit, &the_letter_b, &b);
+    uint16_t result = solve_circuit(circuit, SLICE("a"));
 
     hashmap_destroy(circuit);
-    free(input);
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = result
+        .value.unsigned_int = result,
     };
 }

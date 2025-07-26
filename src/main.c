@@ -14,31 +14,18 @@
 
 char* read_file(const char* path);
 
-int hash_day(unsigned int year, unsigned int day)
-{
-    return day * 50 + year;
-}
+int hash_day(unsigned int year, unsigned int day) { return day * 50 + year; }
 
 int main()
 {
-    Solver solvers[] = {
-        solve_2015_day_01_part_1,
-        solve_2015_day_01_part_2,
-        solve_2015_day_02_part_1,
-        solve_2015_day_02_part_2,
-        solve_2015_day_03_part_1,
-        solve_2015_day_03_part_2,
-        solve_2015_day_04_part_1,
-        SLOW_SOLVER(solve_2015_day_04_part_2),
-        solve_2015_day_05_part_1,
-        solve_2015_day_05_part_2,
-        solve_2015_day_06_part_1,
-        solve_2015_day_06_part_2,
-        solve_2015_day_07_part_1,
-        solve_2015_day_07_part_2,
-        solve_2015_day_08_part_1,
-        solve_2015_day_08_part_2
-    };
+    Solver solvers[] = {solve_2015_day_01_part_1, solve_2015_day_01_part_2,
+                        solve_2015_day_02_part_1, solve_2015_day_02_part_2,
+                        solve_2015_day_03_part_1, solve_2015_day_03_part_2,
+                        solve_2015_day_04_part_1, SLOW_SOLVER(solve_2015_day_04_part_2),
+                        solve_2015_day_05_part_1, solve_2015_day_05_part_2,
+                        solve_2015_day_06_part_1, solve_2015_day_06_part_2,
+                        solve_2015_day_07_part_1, solve_2015_day_07_part_2,
+                        solve_2015_day_08_part_1, solve_2015_day_08_part_2};
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);
 
@@ -54,7 +41,7 @@ int main()
         unsigned int part = 1 + (i % 49 % 2);
 
         char puzzle_id[sizeof("2015-01-1")];
-        sprintf(&puzzle_id[0],"%i-%02i-%i", year, day, part);
+        sprintf(&puzzle_id[0], "%i-%02i-%i", year, day, part);
 
         if (!solver)
         {
@@ -63,19 +50,20 @@ int main()
         }
 
         int day_hash = hash_day(year, day);
-        if (last_day_hash != day_hash) {
+        if (last_day_hash != day_hash)
+        {
             if (input) free(input);
             last_day_hash = day_hash;
 
             char input_path[sizeof("inputs/2015/day_01.txt")];
             snprintf(&input_path[0], sizeof(input_path), "inputs/%i/day_%02i.txt", year, day);
-            
+
             input = read_file(input_path);
             if (!input) return -1;
         }
 
         timer_start();
-        SolverResult result = solver(input);
+        SolverResult result = solver(SLICE(input));
         Duration duration = timer_stop();
 
         char solution_path[sizeof("solutions/2015/day_01.txt")];
@@ -100,12 +88,12 @@ int main()
             case RESULT_UNSIGNED_INT:
                 length = result.value.unsigned_int / 10 + 3;
                 result_str = malloc(sizeof(char) * length);
-                snprintf(result_str, length, "%"PRIu64, result.value.unsigned_int);
+                snprintf(result_str, length, "%" PRIu64, result.value.unsigned_int);
                 break;
             case RESULT_SIGNED_INT:
                 length = result.value.signed_int / 10 + 3;
                 result_str = malloc(sizeof(char) * length);
-                snprintf(result_str, length, "%"PRIi64, result.value.signed_int);
+                snprintf(result_str, length, "%" PRIi64, result.value.signed_int);
                 break;
             case RESULT_DYNAMIC_STRING:
             case RESULT_STATIC_STRING:
@@ -129,7 +117,8 @@ int main()
 
         if (!strcmp(result_str, solution))
         {
-            printf("[%s] [PASS] [%02u.%03d:%03d] %s\n", puzzle_id, duration.seconds, duration.millis, duration.micros, result_str);
+            printf("[%s] [PASS] [%02u.%03d:%03d] %s\n", puzzle_id, duration.seconds, duration.millis, duration.micros,
+                   result_str);
         }
         else
         {

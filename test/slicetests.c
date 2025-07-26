@@ -20,11 +20,13 @@ void test_str_iterator(void)
     str_t str = SLICE("test");
 
     size_t i = 0;
-    for (char *c = str_begin(str); c != str_end(str); c = str_next(c), i++)
+    for (char* c = str_begin(str); c != str_end(str); c = str_next(c), i++)
     {
         TEST_ASSERT_EQUAL_CHAR(str.data[i], *c);
     }
 }
+
+void test_str_at(void) { TEST_ASSERT_EQUAL_CHAR('c', str_at(SLICE("abc"), 2)); }
 
 void test_str_cmp(void)
 {
@@ -69,11 +71,7 @@ void test_str_contains(void)
 void test_str_split(void)
 {
     str_t str = SLICE("My test string");
-    str_t tokens[3] = {
-        str_sub(str, 0, str_size("My te")),
-        str_sub(str, str_size("My test"), str_size("My test ")),
-        str_sub(str, str_size("My test st"), str.length),
-    };
+    str_t tokens[3] = {SLICE("My te"), SLICE(" "), SLICE("ring")};
 
     str_t token;
     StrSpliterator it = str_split(str, SLICE("st"));
@@ -89,17 +87,55 @@ void test_str_split(void)
     TEST_ASSERT_FALSE(str_split_next(&it, &token));
 }
 
+void test_str_lines(void)
+{
+    str_t str = SLICE("my\ntest\nstring");
+    str_t lines[3] = {SLICE("my"), SLICE("test"), SLICE("string")};
+
+    str_t line;
+    StrSpliterator it = str_lines(str);
+    for (size_t i = 0; i < sizeof(lines) / sizeof(str_t); i++)
+    {
+        str_t expected = lines[i];
+
+        TEST_ASSERT_TRUE(str_split_next(&it, &line));
+        TEST_ASSERT_EQUAL(expected.length, line.length);
+        TEST_ASSERT_EQUAL_MEMORY(expected.data, line.data, expected.length);
+    }
+
+    TEST_ASSERT_FALSE(str_split_next(&it, &line));
+}
+
+void test_str_parse_int(void)
+{
+    int result;
+
+    TEST_ASSERT_FALSE(str_parse_int(SLICE(""), &result));
+    TEST_ASSERT_FALSE(str_parse_int(SLICE("x"), &result));
+    TEST_ASSERT_FALSE(str_parse_int(SLICE("--1"), &result));
+    TEST_ASSERT_FALSE(str_parse_int(SLICE("-"), &result));
+
+    TEST_ASSERT_TRUE(str_parse_int(SLICE("150"), &result));
+    TEST_ASSERT_EQUAL_INT(150, result);
+
+    TEST_ASSERT_TRUE(str_parse_int(SLICE("-17"), &result));
+    TEST_ASSERT_EQUAL(-17, result);
+}
+
 int main()
 {
     UNITY_BEGIN();
 
     RUN_TEST(test_slice_from_cstr);
     RUN_TEST(test_str_iterator);
+    RUN_TEST(test_str_at);
     RUN_TEST(test_str_cmp);
     RUN_TEST(test_str_sub);
     RUN_TEST(test_str_find);
     RUN_TEST(test_str_contains);
     RUN_TEST(test_str_split);
+    RUN_TEST(test_str_lines);
+    RUN_TEST(test_str_parse_int);
 
     return UNITY_END();
 }

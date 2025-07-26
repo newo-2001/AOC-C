@@ -1,74 +1,71 @@
 #include "../solvers.h"
 
-#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
 #include <aoc_lib/collections/hashset.h>
 
-static inline bool is_vowel(char c)
-{
-    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
-}
+static inline bool is_vowel(char c) { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; }
 
-static inline bool is_nice(const char *str)
+static inline bool is_nice(str_t str)
 {
-    const char *naughty_strings[] = {"ab", "cd", "pq", "xy"};
-    for (size_t i = 0; i < sizeof(naughty_strings) / sizeof(const char *); i++)
+    str_t naughty_strings[] = {SLICE("ab"), SLICE("cd"), SLICE("pq"), SLICE("xy")};
+    for (size_t i = 0; i < sizeof(naughty_strings) / sizeof(str_t); i++)
     {
-        if (strstr(str, naughty_strings[i]))
-            return false;
+        if (str_contains(str, naughty_strings[i])) return false;
     }
 
     size_t vowels = 0, duplicates = 0;
+    const char* prev = NULL;
 
-    char c;
-    while ((c = *(str++)))
+    for (const char* c = str_begin(str); c != str_end(str); c = str_next(c))
     {
-        vowels += is_vowel(c);
-        duplicates += *str == c;
+        vowels += is_vowel(*c);
+
+        if (prev)
+        {
+            duplicates += *prev == *c;
+        }
+
+        prev = c;
     }
 
     return vowels >= 3 && duplicates > 0;
 }
 
-SolverResult solve_2015_day_05_part_1(const char *_input)
+SolverResult solve_2015_day_05_part_1(str_t input)
 {
-    size_t nice_strings = 0;
+    uint32_t nice_strings = 0;
 
-    char *input = strdup(_input);
-    char *line = strtok(input, "\n");
-
-    while (line)
+    str_t line;
+    StrSpliterator it = str_lines(input);
+    while (str_split_next(&it, &line))
     {
-        nice_strings += (int)is_nice(line);
-        line = strtok(NULL, "\n");
+        nice_strings += is_nice(line);
     }
-
-    free(input);
 
     return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = nice_strings};
+        .value.unsigned_int = nice_strings,
+    };
 }
 
 // Don't ask me how this thing works..
-static bool is_nice_v2(const char *str)
+static bool is_nice_v2(str_t str)
 {
     HashSet seen_pairs = hashset_new(sizeof(char[2]), hashmap_default_options());
-    size_t length = strlen(str);
 
     bool seen_pair_twice = false;
     bool seen_triplet = false;
     bool prev_same = false;
 
-    for (size_t i = 0; i < length - 1; i++)
+    for (size_t i = 0; i < str.length - 1; i++)
     {
-        seen_triplet |= i < length - 2 && str[i] == str[i + 2];
+        seen_triplet |= i < str.length - 2 && str_at(str, i) == str_at(str, i + 2);
 
         if (!seen_pair_twice)
         {
-            if (str[i] == str[i + 1])
+            if (str_at(str, i) == str_at(str, i + 1))
             {
                 if (prev_same)
                 {
@@ -83,12 +80,12 @@ static bool is_nice_v2(const char *str)
                 prev_same = false;
             }
 
-            if (hashset_contains(seen_pairs, &str[i]))
+            if (hashset_contains(seen_pairs, &str.data[i]))
             {
                 seen_pair_twice = true;
             }
 
-            hashset_insert(&seen_pairs, &str[i]);
+            hashset_insert(&seen_pairs, &str.data[i]);
         }
 
         if (seen_triplet && seen_pair_twice)
@@ -103,22 +100,19 @@ static bool is_nice_v2(const char *str)
     return false;
 }
 
-SolverResult solve_2015_day_05_part_2(const char *_input)
+SolverResult solve_2015_day_05_part_2(str_t input)
 {
-    size_t nice_strings = 0;
+    uint32_t nice_strings = 0;
 
-    char *input = strdup(_input);
-    const char *line = strtok(input, "\n");
-
-    while (line)
+    str_t line;
+    StrSpliterator it = str_lines(input);
+    while (str_split_next(&it, &line))
     {
         nice_strings += is_nice_v2(line);
-        line = strtok(NULL, "\n");
     }
-
-    free(input);
 
     return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
-        .value.unsigned_int = nice_strings};
+        .value.unsigned_int = nice_strings,
+    };
 }

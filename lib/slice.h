@@ -8,23 +8,25 @@
 /// The string it is a view into must remaining valid for the lifetime of the slice.
 typedef struct str_t
 {
-    const char *data;
+    const char* data;
     size_t length;
 } str_t;
 
 /// @brief Creates a slice from a null-terminated string.
 /// @return A slice up-to (but excluding) the null-terminator
-str_t str_from_cstr(const char *str);
+str_t str_from_cstr(const char* str);
 
-#define SLICE(x) (_Generic((0, x), \
-                      const char *: str_from_cstr))(x)
+#define SLICE(x) (_Generic(x, const char*: str_from_cstr, char*: str_from_cstr))((const char*)(x))
 
-static inline const char *str_begin(str_t str) { return str.data; }
-static inline const char *str_end(str_t str) { return str.data + str.length; }
-static inline const char *str_next(const char *it) { return ++it; }
+static inline const char* str_begin(str_t str) { return str.data; }
+static inline const char* str_end(str_t str) { return str.data + str.length; }
+static inline const char* str_next(const char* it) { return ++it; }
+
+/// @brief Returns the character at `index` in `str`
+char str_at(str_t str, size_t index);
 
 /// @brief Compares slice `a` with slice `b`.
-/// @return a negative number if `a < b`, a positive number if `a > b` or 0 if they are equal.
+/// @return A negative number if `a < b`, a positive number if `a > b` or 0 if they are equal.
 int str_cmp(str_t a, str_t b);
 
 /// @brief Creates a subslice out of an existing slice.
@@ -41,7 +43,7 @@ str_t str_sub(str_t str, size_t start, size_t length);
 /// where `needle` was first found.
 /// If the function returned `false` its value is undefined.
 /// @return Whether the `haystack` contained `needle`.
-bool str_find(str_t haystack, str_t needle, size_t *out_offset);
+bool str_find(str_t haystack, str_t needle, size_t* out_offset);
 
 /// @brief Tests if `haystack` contain `needle`.
 /// @param haystack The string to search in.
@@ -61,10 +63,21 @@ typedef struct StrSpliterator
 /// @returns A `StrSpliterator` which can be passed to `str_split_next` to yield the next token.
 StrSpliterator str_split(str_t str, str_t delimiter);
 
+/// @brief Creates an iterator that yields the lines in `str`
+/// @returns A `StrSpliterator` which can be passed to `str_split_next`
+StrSpliterator str_lines(str_t str);
+
 /// @brief Attempts to extract the next token from `it`.
 /// The extracted token is written into the `out_token` parameter.
 /// If the function returned `false`, the value of `out_token` is undefined.
 /// @returns `true` if a token was successfully extracted, or `false` if the end of the slice was reached.
-bool str_split_next(StrSpliterator *it, str_t *out_token);
+bool str_split_next(StrSpliterator* it, str_t* out_token);
+
+/// @brief Attempts to parse `str` as an integer.
+/// It matches the regex `-?(\d+)`.
+/// The result is written to `out_result`.
+/// If the function returned `false`, the value of `out_result` is undefined.
+/// @returns Whether the parsing succeeded.
+bool str_parse_int(str_t str, int* out_result);
 
 #endif

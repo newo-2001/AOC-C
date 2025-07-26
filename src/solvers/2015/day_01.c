@@ -1,42 +1,40 @@
 #include "../solvers.h"
 
-SolverResult solve_2015_day_01_part_1(const char* input) {
+SolverResult solve_2015_day_01_part_1(str_t input)
+{
     SolverResult result;
     int32_t floor = 0;
 
-    char c;
-    while ((c = *(input++)))
+    for (const char* c = str_begin(input); c != str_end(input); c = str_next(c))
     {
-        if (c == '(') floor++;
-        else if (c == ')') floor--;
+        if (*c == '(') floor++;
+        else if (*c == ')') floor--;
     }
 
-    result.type = RESULT_SIGNED_INT,
-    result.value.signed_int = floor;
+    result.type = RESULT_SIGNED_INT, result.value.signed_int = floor;
     return result;
 }
 
-SolverResult solve_2015_day_01_part_2(const char* input) {
-    const char* input_start = input;
+SolverResult solve_2015_day_01_part_2(str_t input)
+{
     int32_t floor = 0;
 
-    char c;
-    while((c = *(input++)))
+    for (const char* c = str_begin(input); c != str_end(input); c = str_next(c))
     {
-        if (c == '(') floor++;
-        else if (c == ')') floor--;
+        if (*c == '(') floor++;
+        else if (*c == ')') floor--;
 
         if (floor < 0)
         {
-            return (SolverResult) {
+            return (SolverResult){
                 .type = RESULT_UNSIGNED_INT,
-                .value.unsigned_int = input - input_start
+                .value.unsigned_int = c - input.data,
             };
         }
     }
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_STATIC_ERR,
-        .value.string = "Santa did not enter the basement"
+        .value.string = "Santa did not enter the basement",
     };
 }
