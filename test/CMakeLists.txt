@@ -19,5 +19,7 @@ function(new_test_binary name source_file)
 endfunction()
 
 new_test_binary(hashmap collections/hashmaptests.c)
+new_test_binary(list collections/listtests.c)
 new_test_binary(geometry geometrytests.c)
 new_test_binary(slice slicetests.c)
+new_test_binary(math mathtests.c)

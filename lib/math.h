@@ -9,4 +9,6 @@
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
+float nlogf(float x, float base);
+
 #endif

@@ -7,6 +7,7 @@ set(LIB_HEADERS
 
     collections/hashset.h
     collections/hashmap.h
+    collections/list.h
 )
 
 set(LIB_SOURCE
@@ -14,8 +15,10 @@ set(LIB_SOURCE
     geometry.c
     hash.c
     slice.c
+    math.c
 
     collections/hashmap.c
+    collections/list.c
 )
 
 foreach(HEADER ${LIB_HEADERS})
@@ -28,6 +31,8 @@ endforeach()
 add_library(aoc_lib STATIC
    ${LIB_SOURCE}
 )
+
+target_link_libraries(aoc_lib PRIVATE m)
 
 target_include_directories(aoc_lib PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/include
