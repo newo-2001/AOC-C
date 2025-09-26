@@ -42,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aoc-${{ matrix.platform }}
-          path: build/${{ matrix.configurePreset }}/${{ matrix.build-artifact }}
+          path: build/${{ matrix.configurePreset }}/src/${{ matrix.build-artifact }}
