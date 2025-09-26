@@ -28,7 +28,7 @@ SolverResult solve_2015_day_03_part_1(str_t input)
     Vec2 position = {0, 0};
     HashSet visited = hashset_new(sizeof(Vec2), hashmap_default_options());
 
-    for (const char* c = str_begin(input); c != str_end(input); c = str_next(c))
+    for (const char* c = str_begin(input); c != str_end(input); c++)
     {
         hashset_insert(&visited, &position);
 
@@ -51,7 +51,7 @@ SolverResult solve_2015_day_03_part_2(str_t input)
     Vec2 santa_pos = {0, 0};
     Vec2 robo_santa_pos = {0, 0};
 
-    for (const char* c = str_begin(input); c != str_end(input); c = str_next(c))
+    for (const char* c = str_begin(input); c != str_end(input); c++)
     {
         hashset_insert(&visited, &santa_pos);
         hashset_insert(&visited, &robo_santa_pos);
@@ -59,7 +59,7 @@ SolverResult solve_2015_day_03_part_2(str_t input)
         santa_pos = vec2_addv(santa_pos, dir_unit_vec(parse_direction(*c)));
 
         if (c == str_end(input)) break;
-        c = str_next(c);
+        c++;
 
         robo_santa_pos = vec2_addv(robo_santa_pos, dir_unit_vec(parse_direction(*c)));
     }

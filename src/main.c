@@ -18,14 +18,14 @@ int hash_day(unsigned int year, unsigned int day) { return day * 50 + year; }
 
 int main()
 {
-    Solver solvers[] = {solve_2015_day_01_part_1, solve_2015_day_01_part_2,
-                        solve_2015_day_02_part_1, solve_2015_day_02_part_2,
-                        solve_2015_day_03_part_1, solve_2015_day_03_part_2,
-                        solve_2015_day_04_part_1, SLOW_SOLVER(solve_2015_day_04_part_2),
-                        solve_2015_day_05_part_1, solve_2015_day_05_part_2,
-                        solve_2015_day_06_part_1, solve_2015_day_06_part_2,
-                        solve_2015_day_07_part_1, solve_2015_day_07_part_2,
-                        solve_2015_day_08_part_1, solve_2015_day_08_part_2};
+    Solver solvers[] = { solve_2015_day_01_part_1, solve_2015_day_01_part_2,
+                         solve_2015_day_02_part_1, solve_2015_day_02_part_2,
+                         solve_2015_day_03_part_1, solve_2015_day_03_part_2,
+                         solve_2015_day_04_part_1, SLOW_SOLVER(solve_2015_day_04_part_2),
+                         solve_2015_day_05_part_1, solve_2015_day_05_part_2,
+                         solve_2015_day_06_part_1, solve_2015_day_06_part_2,
+                         solve_2015_day_07_part_1, solve_2015_day_07_part_2,
+                         solve_2015_day_08_part_1, solve_2015_day_08_part_2 };
 
     const size_t NUM_SOLVERS = sizeof(solvers) / sizeof(Solver);
 

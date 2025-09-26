@@ -1,5 +1,5 @@
-file(COPY ../inputs DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY ../solutions DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ../inputs DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ../solutions DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(aoc
     main.c

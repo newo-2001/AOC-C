@@ -18,7 +18,7 @@ static inline bool is_nice(str_t str)
     size_t vowels = 0, duplicates = 0;
     const char* prev = NULL;
 
-    for (const char* c = str_begin(str); c != str_end(str); c = str_next(c))
+    for (const char* c = str_begin(str); c != str_end(str); c++)
     {
         vowels += is_vowel(*c);
 

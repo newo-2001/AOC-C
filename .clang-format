@@ -1,11 +1,12 @@
+BasedOnStyle: LLVM
+
 IndentWidth: 4
-TabWidth: 4
 ColumnLimit: 120
 BreakBeforeBraces: Allman
-SpaceBeforeParens: ControlStatements
 AlignTrailingComments: true
 SortIncludes: false
 PointerAlignment: Left
 AllowShortLoopsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 IndentCaseLabels: true
+Cpp11BracedListStyle: false

@@ -72,6 +72,20 @@ bool str_contains(str_t haystack, str_t needle)
     return str_find(haystack, needle, &offset);
 }
 
+bool str_starts_with(str_t str, str_t token)
+{
+    str = str_sub(str, 0, token.length);
+    return !str_cmp(str, token);
+}
+
+bool str_ends_with(str_t str, str_t token)
+{
+    if (token.length > str.length) return false;
+
+    str = str_sub(str, str.length - token.length, str.length);
+    return !str_cmp(str, token);
+}
+
 StrSpliterator str_split(str_t str, str_t delimiter)
 {
     return (StrSpliterator){
@@ -86,7 +100,7 @@ bool str_split_next(StrSpliterator* it, str_t* out_token)
 {
     str_t str = it->str;
 
-    if (!str.length) return false;
+    if (str.length == 0) return false;
 
     size_t offset;
     if (!str_find(str, it->delimiter, &offset))
@@ -106,7 +120,7 @@ bool str_parse_int(str_t str, int* out_result)
 {
     *out_result = 0;
 
-    if (!str.length) return false;
+    if (str.length == 0) return false;
 
     bool negative = *str.data == '-';
     if (negative)

@@ -43,7 +43,7 @@ void list_reserve(List* list, size_t num_items)
     size_t min_size = list->size + num_items;
     if (list->capacity >= min_size) return;
 
-    float exponent = ceilf(nlogf(min_size, list->grow_factor));
+    float exponent = ceilf(nlogf((float)min_size, list->grow_factor));
     size_t new_size = (size_t)powf(list->grow_factor, exponent);
     list_reserve_exact(list, new_size);
 }

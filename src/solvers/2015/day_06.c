@@ -9,6 +9,7 @@
 
 typedef enum InstructionType
 {
+    INST_INVALID,
     INST_DISABLE,
     INST_ENABLE,
     INST_TOGGLE,
@@ -33,21 +34,46 @@ static bool parse_pos(str_t str, Vec2* out_result)
 {
     StrSpliterator comma = str_split(str, SLICE(","));
 
-    return str_split_next(&comma, &str) && str_parse_int(str, &out_result->x) && str_split_next(&comma, &str) &&
-           str_parse_int(str, &out_result->y);
+    if (!str_split_next(&comma, &str)) return false;
+    if (!str_parse_int(str, &out_result->x)) return false;
+    if (!str_split_next(&comma, &str)) return false;
+    return str_parse_int(str, &out_result->y);
 }
 
-static bool parse_instruction(str_t str, Instruction* out_result)
+typedef struct InstructionToken
 {
-    if (str_contains(str, SLICE("toggle"))) out_result->type = INST_TOGGLE;
-    else if (str_contains(str, SLICE("turn on"))) out_result->type = INST_ENABLE;
-    else if (str_contains(str, SLICE("turn off"))) out_result->type = INST_DISABLE;
+    str_t token;
+    InstructionType type;
+} InstructionToken;
+
+bool parse_instruction(str_t str, Instruction* out_result)
+{
+    InstructionToken tokens[3] = {
+        (InstructionToken){ .token = SLICE("toggle "), .type = INST_TOGGLE },
+        (InstructionToken){ .token = SLICE("turn on "), .type = INST_ENABLE },
+        (InstructionToken){ .token = SLICE("turn off "), .type = INST_DISABLE },
+    };
+
+    out_result->type = INST_INVALID;
+    for (size_t i = 0; i < sizeof(tokens) / sizeof(InstructionToken); i++)
+    {
+        InstructionToken token = tokens[i];
+        if (!str_starts_with(str, token.token)) continue;
+
+        str = str_sub(str, token.token.length, str.length);
+        out_result->type = token.type;
+    }
+
+    if (out_result->type == INST_INVALID) return false;
 
     size_t sep_pos;
     str_t sep = SLICE(" through ");
 
-    return str_find(str, sep, &sep_pos) && parse_pos(str_sub(str, 0, sep_pos), &out_result->area.top_left) &&
-           parse_pos(str_sub(str, sep_pos + sep.length, str.length), &out_result->area.bottom_right);
+    if (!str_find(str, sep, &sep_pos)) return false;
+    if (!parse_pos(str_sub(str, 0, sep_pos), &out_result->area.top_left)) return false;
+
+    str = str_sub(str, sep_pos + sep.length, str.length);
+    return parse_pos(str, &out_result->area.bottom_right);
 }
 
 #define GRID_WIDTH 1000
@@ -81,6 +107,9 @@ static void execute_instruction(Instruction instruction, uint32_t* grid)
                     break;
                 case INST_INC2:
                     (*cell) += 2;
+                    break;
+                case INST_INVALID:
+                    assert(false);
                     break;
             }
         }

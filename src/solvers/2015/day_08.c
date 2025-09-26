@@ -4,9 +4,9 @@ static size_t deflated_size(str_t escaped_str)
 {
     size_t size = escaped_str.length + 2;
 
-    for (const char* c = str_begin(escaped_str); c != str_end(escaped_str); c = str_next(c))
+    for (const char* c = str_begin(escaped_str); c < str_end(escaped_str);)
     {
-        if (*(c++) == '\\' && *(c++) == 'x')
+        if (*(c++) == '\\' && c != str_end(escaped_str) && *(c++) == 'x')
         {
             c += 2;
         }
@@ -21,7 +21,7 @@ static size_t escaped_size(str_t str)
 {
     size_t size = 0;
 
-    for (const char* c = str_begin(str); c != str_end(str); c = str_next(c))
+    for (const char* c = str_begin(str); c != str_end(str); c++)
     {
         if (*c == '\\' || *c == '"') size++;
         size++;

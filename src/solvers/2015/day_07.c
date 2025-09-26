@@ -145,10 +145,10 @@ static uint16_t value_eval(HashMap circuit, HashMap cache, Value value)
 static HashMap build_circuit(str_t input)
 {
     HashMapOptions options = hashmap_default_options();
-    options.key_comparer = hashmap_str_eq;
-    options.hash_function = hashmap_str_hash;
+    options.key_comparer = hashmap_eq_str;
+    options.hash_function = hashmap_hash_str;
 
-    HashMap circuit = hashmap_new(sizeof(const char*), sizeof(Expression), options);
+    HashMap circuit = hashmap_new(sizeof(str_t), sizeof(Expression), options);
 
     str_t line;
     StrSpliterator it = str_lines(input);
@@ -163,10 +163,10 @@ static HashMap build_circuit(str_t input)
 static uint16_t solve_circuit(HashMap circuit, str_t variable)
 {
     HashMapOptions options = hashmap_default_options();
-    options.hash_function = hashmap_str_hash;
-    options.key_comparer = hashmap_str_eq;
+    options.hash_function = hashmap_hash_str;
+    options.key_comparer = hashmap_eq_str;
 
-    HashMap cache = hashmap_new(sizeof(const char*), sizeof(uint16_t), options);
+    HashMap cache = hashmap_new(sizeof(str_t), sizeof(uint16_t), options);
     Value value = (Value){
         .type = VAL_VAR,
         .variable = variable,

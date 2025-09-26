@@ -20,7 +20,7 @@ void test_str_iterator(void)
     str_t str = SLICE("test");
 
     size_t i = 0;
-    for (char* c = str_begin(str); c != str_end(str); c = str_next(c), i++)
+    for (const char* c = str_begin(str); c != str_end(str); c = str_next(c), i++)
     {
         TEST_ASSERT_EQUAL_CHAR(str.data[i], *c);
     }
@@ -66,6 +66,22 @@ void test_str_contains(void)
 {
     TEST_ASSERT_TRUE(str_contains(SLICE("test"), SLICE("st")));
     TEST_ASSERT_FALSE(str_contains(SLICE("test"), SLICE("a")));
+}
+
+void test_str_starts_with(void)
+{
+    TEST_ASSERT_TRUE(str_starts_with(SLICE("test"), SLICE("test")));
+    TEST_ASSERT_TRUE(str_starts_with(SLICE("test"), SLICE("te")));
+    TEST_ASSERT_TRUE(str_starts_with(SLICE("test"), SLICE("")));
+    TEST_ASSERT_FALSE(str_starts_with(SLICE("test"), SLICE("a")));
+}
+
+void test_str_ends_with(void)
+{
+    TEST_ASSERT_TRUE(str_ends_with(SLICE("test"), SLICE("test")));
+    TEST_ASSERT_TRUE(str_ends_with(SLICE("test"), SLICE("st")));
+    TEST_ASSERT_TRUE(str_ends_with(SLICE("test"), SLICE("")));
+    TEST_ASSERT_FALSE(str_ends_with(SLICE("test"), SLICE("a")));
 }
 
 void test_str_split(void)
@@ -133,6 +149,8 @@ int main()
     RUN_TEST(test_str_sub);
     RUN_TEST(test_str_find);
     RUN_TEST(test_str_contains);
+    RUN_TEST(test_str_starts_with);
+    RUN_TEST(test_str_ends_with);
     RUN_TEST(test_str_split);
     RUN_TEST(test_str_lines);
     RUN_TEST(test_str_parse_int);

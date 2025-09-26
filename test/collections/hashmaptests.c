@@ -1,6 +1,7 @@
 #include <unity.h>
 
 #include <aoc_lib/collections/hashmap.h>
+#include <aoc_lib/slice.h>
 
 void tearDown() {}
 void setUp() {}
@@ -9,11 +10,11 @@ static HashMap new_str_map()
 {
     HashMapOptions options = {
         .bucket_count = 3,
-        .hash_function = hashmap_str_hash,
-        .key_comparer = hashmap_str_eq
+        .hash_function = hashmap_hash_str,
+        .key_comparer = hashmap_eq_str,
     };
 
-    return hashmap_new(sizeof(const char*), sizeof(const char*), options);
+    return hashmap_new(sizeof(str_t), sizeof(str_t), options);
 }
 
 void test_new_hashmap_is_empty(void)
@@ -53,15 +54,16 @@ void test_hashmap_contains_valid_key(void)
 void test_hashmap_contains_valid_string_key(void)
 {
     HashMap map = new_str_map();
-    const char *key = "test", *value = "string";
+    str_t key = SLICE("test"), value = SLICE("string");
 
     hashmap_insert(&map, &key, &value);
-    
-    const char* lookup = "test";
+
+    str_t lookup = SLICE("test");
     TEST_ASSERT_TRUE_MESSAGE(hashmap_contains_key(map, &lookup), "Hashmap didn't contain expected key");
 
-    const char* actual = *((const char**) hashmap_get(map, &lookup));
-    TEST_ASSERT_EQUAL_STRING(value, actual);
+    str_t actual = *((str_t*)hashmap_get(map, &lookup));
+    TEST_ASSERT_EQUAL_size_t(value.length, actual.length);
+    TEST_ASSERT_EQUAL_MEMORY(value.data, actual.data, value.length);
 
     hashmap_destroy(map);
 }

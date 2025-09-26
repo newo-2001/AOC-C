@@ -32,7 +32,9 @@ add_library(aoc_lib STATIC
    ${LIB_SOURCE}
 )
 
-target_link_libraries(aoc_lib PRIVATE m)
+if (UNIX)
+    target_link_libraries(aoc_lib PRIVATE m)
+endif ()
 
 target_include_directories(aoc_lib PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/include

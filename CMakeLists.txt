@@ -14,7 +14,6 @@ if (WIN32)
         WIN32
         _CRT_SECURE_NO_WARNINGS
         NOMINMAX
-        strtok_r=strtok_s
     )
 elseif (UNIX)
     list(APPEND common_defines UNIX)
