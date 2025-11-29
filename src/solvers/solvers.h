@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <aoc_lib/slice.h>
+#include <aoc_lib/str.h>
 
 typedef enum SolverResultType
 {

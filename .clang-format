@@ -8,5 +8,8 @@ SortIncludes: false
 PointerAlignment: Left
 AllowShortLoopsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortFunctionsOnASingleLine: Empty
 IndentCaseLabels: true
 Cpp11BracedListStyle: false
+BreakBeforeBinaryOperators: All
+SpaceAfterCStyleCast: true

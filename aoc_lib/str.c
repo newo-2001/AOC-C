@@ -1,4 +1,4 @@
-#include "slice.h"
+#include "str.h"
 
 #include <string.h>
 #include <assert.h>
@@ -7,7 +7,7 @@
 
 str_t str_from_cstr(const char* str)
 {
-    return (str_t){
+    return (str_t) {
         .data = str,
         .length = strlen(str),
     };
@@ -22,7 +22,7 @@ char str_at(str_t str, size_t index)
 int str_cmp(str_t a, str_t b)
 {
     int result = memcmp(a.data, b.data, min(a.length, b.length));
-    return result == 0 ? (int)(a.length - b.length) : result;
+    return result == 0 ? (int) (a.length - b.length) : result;
 }
 
 str_t str_sub(str_t str, size_t start, size_t end)
@@ -30,7 +30,7 @@ str_t str_sub(str_t str, size_t start, size_t end)
     assert(end <= str.length);
     assert(start <= end);
 
-    return (str_t){
+    return (str_t) {
         .data = str.data + start,
         .length = end - start,
     };
@@ -88,13 +88,16 @@ bool str_ends_with(str_t str, str_t token)
 
 StrSpliterator str_split(str_t str, str_t delimiter)
 {
-    return (StrSpliterator){
+    return (StrSpliterator) {
         .str = str,
         .delimiter = delimiter,
     };
 }
 
-StrSpliterator str_lines(str_t str) { return str_split(str, SLICE("\n")); }
+StrSpliterator str_lines(str_t str)
+{
+    return str_split(str, STR_SLICE("\n"));
+}
 
 bool str_split_next(StrSpliterator* it, str_t* out_token)
 {

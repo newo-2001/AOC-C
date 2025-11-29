@@ -1,46 +1,55 @@
-#ifndef AOC_SLICE_H
-#define AOC_SLICE_H
+#ifndef AOC_STR_H
+#define AOC_STR_H
 
 #include <stddef.h>
 #include <stdbool.h>
 
 /// @brief A view into a string, it is *not* null-terminated and *not* managed.
-/// The string it is a view into must remaining valid for the lifetime of the slice.
+/// The string it is a view into must remaining valid for the lifetime of the string slice.
 typedef struct str_t
 {
     const char* data;
     size_t length;
 } str_t;
 
-/// @brief Creates a slice from a null-terminated string.
+/// @brief Creates a string slice from a null-terminated string.
 /// @return A slice up-to (but excluding) the null-terminator.
 str_t str_from_cstr(const char* str);
 
-#define SLICE(x)                                                                                                       \
-    (_Generic(x, const char*: str_from_cstr, char*: str_from_cstr, char[sizeof(x)]: str_from_cstr))((const char*)(x))
+#define STR_SLICE(x)                                                                                                   \
+    (_Generic(x, const char*: str_from_cstr, char*: str_from_cstr, char[sizeof(x)]: str_from_cstr))((const char*) (x))
 
 /// @brief Creates an iterator over a `str`.
-static inline const char* str_begin(str_t str) { return str.data; }
+static inline const char* str_begin(str_t str)
+{
+    return str.data;
+}
 
 /// @brief Advances the given iterator.
-static inline const char* str_next(const char* it) { return ++it; }
+static inline const char* str_next(const char* it)
+{
+    return ++it;
+}
 
 /// @brief Returns a pointer beyond the last element in `str`.
-static inline const char* str_end(str_t str) { return str.data + str.length; }
+static inline const char* str_end(str_t str)
+{
+    return str.data + str.length;
+}
 
 /// @brief Returns the character at `index` in `str`.
 /// @note Requires `index < str.length`.
 char str_at(str_t str, size_t index);
 
-/// @brief Compares slice `a` with slice `b`.
+/// @brief Compares string slice `a` with string slice `b`.
 /// @return A negative number if `a < b`, a positive number if `a > b` or 0 if they are equal.
 int str_cmp(str_t a, str_t b);
 
-/// @brief Creates a subslice out of an existing slice.
-/// @param slice The slice to create a subslice from.
-/// @param start The offset into the slice where the substring begins (inclusive) (0-indexed).
-/// @param end The offset into the slice where the substring ends (exclusive) (0-indexed).
-/// @return The sublice `slice[start:end)`.
+/// @brief Creates a subslice out of an existing string slice.
+/// @param slice The string slice to create a subslice from.
+/// @param start The offset into the string slice where the substring begins (inclusive) (0-indexed).
+/// @param end The offset into the string slice where the substring ends (exclusive) (0-indexed).
+/// @return The sublice `str[start:end)`.
 /// @note The function requires `start <= end < str.length`.
 str_t str_sub(str_t str, size_t start, size_t end);
 
@@ -84,7 +93,7 @@ StrSpliterator str_lines(str_t str);
 /// @brief Attempts to extract the next token from `it`.
 /// The extracted token is written into the `out_token` parameter.
 /// If the function returned `false`, the value of `out_token` is undefined.
-/// @returns `true` if a token was successfully extracted, or `false` if the end of the slice was reached.
+/// @returns `true` if a token was successfully extracted, or `false` if the end of the string was reached.
 bool str_split_next(StrSpliterator* it, str_t* out_token);
 
 /// @brief Attempts to parse `str` as an integer.

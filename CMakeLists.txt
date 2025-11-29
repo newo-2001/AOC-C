@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(aoc C)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(CTest)
 enable_testing()
@@ -21,6 +22,6 @@ endif ()
 
 add_subdirectory(vendor/unity)
 add_subdirectory(vendor/md5)
-add_subdirectory(lib)
+add_subdirectory(aoc_lib)
 add_subdirectory(src)
 add_subdirectory(test)

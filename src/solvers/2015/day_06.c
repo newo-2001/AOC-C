@@ -32,7 +32,7 @@ typedef struct Instruction
 
 static bool parse_pos(str_t str, Vec2* out_result)
 {
-    StrSpliterator comma = str_split(str, SLICE(","));
+    StrSpliterator comma = str_split(str, STR_SLICE(","));
 
     if (!str_split_next(&comma, &str)) return false;
     if (!str_parse_int(str, &out_result->x)) return false;
@@ -49,9 +49,9 @@ typedef struct InstructionToken
 bool parse_instruction(str_t str, Instruction* out_result)
 {
     InstructionToken tokens[3] = {
-        (InstructionToken){ .token = SLICE("toggle "), .type = INST_TOGGLE },
-        (InstructionToken){ .token = SLICE("turn on "), .type = INST_ENABLE },
-        (InstructionToken){ .token = SLICE("turn off "), .type = INST_DISABLE },
+        (InstructionToken) { .token = STR_SLICE("toggle "), .type = INST_TOGGLE },
+        (InstructionToken) { .token = STR_SLICE("turn on "), .type = INST_ENABLE },
+        (InstructionToken) { .token = STR_SLICE("turn off "), .type = INST_DISABLE },
     };
 
     out_result->type = INST_INVALID;
@@ -67,7 +67,7 @@ bool parse_instruction(str_t str, Instruction* out_result)
     if (out_result->type == INST_INVALID) return false;
 
     size_t sep_pos;
-    str_t sep = SLICE(" through ");
+    str_t sep = STR_SLICE(" through ");
 
     if (!str_find(str, sep, &sep_pos)) return false;
     if (!parse_pos(str_sub(str, 0, sep_pos), &out_result->area.top_left)) return false;
@@ -138,7 +138,7 @@ static SolverResult solve(str_t input, Instruction (*instruction_set)(Instructio
         Instruction inst;
         if (!parse_instruction(line, &inst))
         {
-            return (SolverResult){
+            return (SolverResult) {
                 .type = RESULT_STATIC_ERR,
                 .value.string = "Failed to parse instruction",
             };
@@ -150,13 +150,16 @@ static SolverResult solve(str_t input, Instruction (*instruction_set)(Instructio
 
     free(grid);
 
-    return (SolverResult){
+    return (SolverResult) {
         .type = RESULT_UNSIGNED_INT,
         .value.unsigned_int = lights,
     };
 }
 
-static Instruction digital(Instruction instruction) { return instruction; }
+static Instruction digital(Instruction instruction)
+{
+    return instruction;
+}
 
 static Instruction analog(Instruction instruction)
 {
@@ -178,5 +181,11 @@ static Instruction analog(Instruction instruction)
     return instruction;
 }
 
-SolverResult solve_2015_day_06_part_1(str_t input) { return solve(input, digital); }
-SolverResult solve_2015_day_06_part_2(str_t input) { return solve(input, analog); }
+SolverResult solve_2015_day_06_part_1(str_t input)
+{
+    return solve(input, digital);
+}
+SolverResult solve_2015_day_06_part_2(str_t input)
+{
+    return solve(input, analog);
+}

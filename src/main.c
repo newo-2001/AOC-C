@@ -14,7 +14,10 @@
 
 char* read_file(const char* path);
 
-int hash_day(unsigned int year, unsigned int day) { return day * 50 + year; }
+int hash_day(unsigned int year, unsigned int day)
+{
+    return day * 50 + year;
+}
 
 int main()
 {
@@ -63,7 +66,7 @@ int main()
         }
 
         timer_start();
-        SolverResult result = solver(SLICE(input));
+        SolverResult result = solver(STR_SLICE(input));
         Duration duration = timer_stop();
 
         char solution_path[sizeof("solutions/2015/day_01.txt")];

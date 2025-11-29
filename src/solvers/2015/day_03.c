@@ -25,8 +25,8 @@ static inline Direction parse_direction(char direction)
 
 SolverResult solve_2015_day_03_part_1(str_t input)
 {
-    Vec2 position = {0, 0};
-    HashSet visited = hashset_new(sizeof(Vec2), hashmap_default_options());
+    Vec2 position = { 0, 0 };
+    HashSet visited = hashset_create(sizeof(Vec2));
 
     for (const char* c = str_begin(input); c != str_end(input); c++)
     {
@@ -39,7 +39,7 @@ SolverResult solve_2015_day_03_part_1(str_t input)
     size_t size = hashset_size(visited);
     hashset_destroy(visited);
 
-    return (SolverResult){
+    return (SolverResult) {
         .type = RESULT_UNSIGNED_INT,
         .value.unsigned_int = size,
     };
@@ -47,9 +47,9 @@ SolverResult solve_2015_day_03_part_1(str_t input)
 
 SolverResult solve_2015_day_03_part_2(str_t input)
 {
-    HashSet visited = hashset_new(sizeof(Vec2), hashmap_default_options());
-    Vec2 santa_pos = {0, 0};
-    Vec2 robo_santa_pos = {0, 0};
+    HashSet visited = hashset_create(sizeof(Vec2));
+    Vec2 santa_pos = { 0, 0 };
+    Vec2 robo_santa_pos = { 0, 0 };
 
     for (const char* c = str_begin(input); c != str_end(input); c++)
     {
@@ -67,5 +67,5 @@ SolverResult solve_2015_day_03_part_2(str_t input)
     size_t size = hashset_size(visited);
     hashset_destroy(visited);
 
-    return (SolverResult){.type = RESULT_UNSIGNED_INT, .value.unsigned_int = size};
+    return (SolverResult) { .type = RESULT_UNSIGNED_INT, .value.unsigned_int = size };
 }

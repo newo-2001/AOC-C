@@ -15,8 +15,8 @@ typedef struct Present
 static bool parse_present(str_t line, Present* out_present)
 {
     str_t num;
-    int* side = (int*)&out_present->length;
-    StrSpliterator it = str_split(line, SLICE("x"));
+    int* side = (int*) &out_present->length;
+    StrSpliterator it = str_split(line, STR_SLICE("x"));
 
     while (str_split_next(&it, &num))
     {
@@ -57,7 +57,7 @@ static SolverResult solve(str_t input, uint32_t (*measure)(Present))
         Present present;
         if (!parse_present(line, &present))
         {
-            return (SolverResult){
+            return (SolverResult) {
                 .type = RESULT_STATIC_ERR,
                 .value.string = "Failed to parse present",
             };
@@ -66,11 +66,17 @@ static SolverResult solve(str_t input, uint32_t (*measure)(Present))
         total_wrapping_paper += measure(present);
     }
 
-    return (SolverResult){
+    return (SolverResult) {
         .type = RESULT_UNSIGNED_INT,
         .value.unsigned_int = total_wrapping_paper,
     };
 }
 
-SolverResult solve_2015_day_02_part_1(str_t input) { return solve(input, wrapping_paper); }
-SolverResult solve_2015_day_02_part_2(str_t input) { return solve(input, ribbon); }
+SolverResult solve_2015_day_02_part_1(str_t input)
+{
+    return solve(input, wrapping_paper);
+}
+SolverResult solve_2015_day_02_part_2(str_t input)
+{
+    return solve(input, ribbon);
+}

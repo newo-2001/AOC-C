@@ -5,11 +5,14 @@
 
 #include <aoc_lib/collections/hashset.h>
 
-static inline bool is_vowel(char c) { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; }
+static inline bool is_vowel(char c)
+{
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+}
 
 static inline bool is_nice(str_t str)
 {
-    str_t naughty_strings[] = {SLICE("ab"), SLICE("cd"), SLICE("pq"), SLICE("xy")};
+    str_t naughty_strings[] = { STR_SLICE("ab"), STR_SLICE("cd"), STR_SLICE("pq"), STR_SLICE("xy") };
     for (size_t i = 0; i < sizeof(naughty_strings) / sizeof(str_t); i++)
     {
         if (str_contains(str, naughty_strings[i])) return false;
@@ -44,7 +47,7 @@ SolverResult solve_2015_day_05_part_1(str_t input)
         nice_strings += is_nice(line);
     }
 
-    return (SolverResult){
+    return (SolverResult) {
         .type = RESULT_UNSIGNED_INT,
         .value.unsigned_int = nice_strings,
     };
@@ -53,7 +56,7 @@ SolverResult solve_2015_day_05_part_1(str_t input)
 // Don't ask me how this thing works..
 static bool is_nice_v2(str_t str)
 {
-    HashSet seen_pairs = hashset_new(sizeof(char[2]), hashmap_default_options());
+    HashSet seen_pairs = hashset_create(sizeof(char[2]));
 
     bool seen_pair_twice = false;
     bool seen_triplet = false;
@@ -111,7 +114,7 @@ SolverResult solve_2015_day_05_part_2(str_t input)
         nice_strings += is_nice_v2(line);
     }
 
-    return (SolverResult){
+    return (SolverResult) {
         .type = RESULT_UNSIGNED_INT,
         .value.unsigned_int = nice_strings,
     };
