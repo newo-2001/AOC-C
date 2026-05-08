@@ -166,7 +166,7 @@ static uint16_t solve_circuit(HashMap circuit, str_t variable)
     options.hash_function = hashmap_hash_str;
     options.key_comparer = hashmap_eq_str;
 
-    HashMap cache = hashmap_create(sizeof(str_t), sizeof(uint16_t));
+    HashMap cache = hashmap_create_with_options(sizeof(str_t), sizeof(uint16_t), options);
     Value value = (Value) {
         .type = VAL_VAR,
         .variable = variable,
