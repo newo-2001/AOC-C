@@ -4,14 +4,17 @@ file(COPY ../solutions DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 add_executable(aoc
     main.c
     timer.c
-    solvers/2015/day_01.c
-    solvers/2015/day_02.c
-    solvers/2015/day_03.c
-    solvers/2015/day_04.c
-    solvers/2015/day_05.c
-    solvers/2015/day_06.c
-    solvers/2015/day_07.c
-    solvers/2015/day_08.c
+
+    solvers/2015/2015_day_01.c
+    solvers/2015/2015_day_02.c
+    solvers/2015/2015_day_03.c
+    solvers/2015/2015_day_04.c
+    solvers/2015/2015_day_05.c
+    solvers/2015/2015_day_06.c
+    solvers/2015/2015_day_07.c
+    solvers/2015/2015_day_08.c
+
+    solvers/2025/2025_day_01.c
 )
 
 target_link_libraries(aoc

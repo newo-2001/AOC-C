@@ -92,6 +92,8 @@ void test_list_iter(void)
     it = list_next(list, it);
     TEST_ASSERT_NOT_EQUAL(it, list_start(list));
     TEST_ASSERT_EQUAL(it, list_end(list));
+
+    list_destroy(list);
 }
 
 int main()
