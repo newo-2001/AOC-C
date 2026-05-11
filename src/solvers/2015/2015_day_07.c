@@ -167,7 +167,7 @@ static uint16_t solve_circuit(HashMap circuit, str_t variable)
     options.key_comparer = hashmap_eq_str;
 
     HashMap cache = hashmap_create_with_options(sizeof(str_t), sizeof(uint16_t), options);
-    Value value = (Value) {
+    Value value = (Value){
         .type = VAL_VAR,
         .variable = variable,
     };
@@ -186,7 +186,7 @@ SolverResult solve_2015_day_07_part_1(str_t input)
 
     hashmap_destroy(circuit);
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
         .value.unsigned_int = result,
     };
@@ -198,7 +198,7 @@ SolverResult solve_2015_day_07_part_2(str_t input)
 
     Expression b;
     b.type = EXPR_LITERAL;
-    b.left = (Value) {
+    b.left = (Value){
         .type = VAL_CONST,
         .constant = solve_circuit(circuit, STR_SLICE("a")),
     };
@@ -209,7 +209,7 @@ SolverResult solve_2015_day_07_part_2(str_t input)
 
     hashmap_destroy(circuit);
 
-    return (SolverResult) {
+    return (SolverResult){
         .type = RESULT_UNSIGNED_INT,
         .value.unsigned_int = result,
     };

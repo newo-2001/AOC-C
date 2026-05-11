@@ -4,6 +4,7 @@ set(LIB_SOURCE
     hash.c
     str.c
     math.c
+    regex.c
 
     collections/hashmap.c
     collections/list.c

@@ -7,7 +7,7 @@
 
 str_t str_from_cstr(const char* str)
 {
-    return (str_t) {
+    return (str_t){
         .data = str,
         .length = strlen(str),
     };
@@ -30,7 +30,7 @@ str_t str_sub(str_t str, size_t start, size_t end)
     assert(end <= str.length);
     assert(start <= end);
 
-    return (str_t) {
+    return (str_t){
         .data = str.data + start,
         .length = end - start,
     };
@@ -88,7 +88,7 @@ bool str_ends_with(str_t str, str_t token)
 
 StrSpliterator str_split(str_t str, str_t delimiter)
 {
-    return (StrSpliterator) {
+    return (StrSpliterator){
         .str = str,
         .delimiter = delimiter,
     };
